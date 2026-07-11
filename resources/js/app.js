@@ -264,11 +264,19 @@ function initCollectionMega() {
         toggle.setAttribute('aria-expanded', 'false');
     };
 
+    // Always start closed (also fixes browser back / bfcache restoring open state)
+    close();
+    window.addEventListener('pageshow', () => close());
+
     toggle.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (mega.hidden) open();
         else close();
+    });
+
+    mega.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => close());
     });
 
     document.addEventListener('keydown', (e) => {
