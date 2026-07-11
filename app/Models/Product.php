@@ -10,8 +10,13 @@ class Product extends Model
     protected $fillable = [
         'category_id',
         'name',
+        'brand',
         'slug',
         'image',
+        'short_description',
+        'description',
+        'gallery',
+        'pack_options',
         'price_from',
         'currency',
         'is_best_seller',
@@ -26,6 +31,8 @@ class Product extends Model
         'is_bagasse_tableware',
         'is_biodegradable_products',
         'is_bagasse_takeaway_container',
+        'is_paper_products',
+        'is_new_arrivals',
         'is_active',
         'sort_order',
     ];
@@ -34,6 +41,8 @@ class Product extends Model
     {
         return [
             'price_from' => 'decimal:2',
+            'gallery' => 'array',
+            'pack_options' => 'array',
             'is_best_seller' => 'boolean',
             'is_top_selling' => 'boolean',
             'is_hinged_box' => 'boolean',
@@ -46,6 +55,8 @@ class Product extends Model
             'is_bagasse_tableware' => 'boolean',
             'is_biodegradable_products' => 'boolean',
             'is_bagasse_takeaway_container' => 'boolean',
+            'is_paper_products' => 'boolean',
+            'is_new_arrivals' => 'boolean',
             'is_active' => 'boolean',
         ];
     }
@@ -144,6 +155,20 @@ class Product extends Model
             ->orderBy('sort_order');
     }
 
+    public function scopePaperProducts($query)
+    {
+        return $query->active()
+            ->where('is_paper_products', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeNewArrivals($query)
+    {
+        return $query->active()
+            ->where('is_new_arrivals', true)
+            ->orderBy('sort_order');
+    }
+
     public function imageUrl(): ?string
     {
         if (! $this->image) {
@@ -157,8 +182,71 @@ class Product extends Model
         return asset($this->image);
     }
 
+    public function galleryUrls(): array
+    {
+        $urls = [];
+
+        if ($this->imageUrl()) {
+            $urls[] = $this->imageUrl();
+        }
+
+        foreach ($this->gallery ?? [] as $path) {
+            if (! $path) {
+                continue;
+            }
+
+            $url = str_starts_with($path, 'http://') || str_starts_with($path, 'https://')
+                ? $path
+                : asset($path);
+
+            if (! in_array($url, $urls, true)) {
+                $urls[] = $url;
+            }
+        }
+
+        return $urls;
+    }
+
+    public function packOptions(): array
+    {
+        if (! empty($this->pack_options)) {
+            return $this->pack_options;
+        }
+
+        $base = max(1, (float) $this->price_from / 25);
+
+        return [
+            ['pcs' => 25, 'unit_price' => round($base, 2)],
+            ['pcs' => 100, 'unit_price' => round($base * 0.94, 2)],
+            ['pcs' => 300, 'unit_price' => round($base * 0.89, 2)],
+            ['pcs' => 500, 'unit_price' => round($base * 0.87, 2)],
+        ];
+    }
+
+    public function formattedPrice(float $amount): string
+    {
+        return $this->currency.' '.number_format($amount, 2);
+    }
+
     public function formattedPriceFrom(): string
     {
         return 'From '.$this->currency.' '.number_format((float) $this->price_from, 2);
+    }
+
+    public function defaultShortDescription(): string
+    {
+        return $this->short_description
+            ?: 'This tray contains 3 different compartments to segregate a variety of dry and liquid food. It is microwave & Freezer safe.';
+    }
+
+    public function defaultDescriptionHtml(): string
+    {
+        if ($this->description) {
+            return $this->description;
+        }
+
+        return '<p><strong>'.$this->name.'</strong></p>'
+            .'<p>Compact. Convenient. Classy.</p>'
+            .'<p>Perfect for restaurants, cloud kitchens, catering, and takeaways. Durable build with a secure lid for mess-free packing and delivery.</p>';
     }
 }

@@ -79,13 +79,32 @@ class ProductSeeder extends Seeder
             ['name' => 'Xperciainc Trending Portion Cup Set', 'price' => 165.00],
         ]);
 
+        $reusableMealTraysId = Category::where('slug', 'reusable-meal-trays')->value('id') ?? $mealTraysId;
+        $cornstarchMealTraysId = Category::where('slug', 'cornstarch-meal-trays')->value('id') ?? $mealTraysId;
+
+        // Parent category products (shown first on collection page).
         $this->seedSection($mealTraysId, 'is_meal_trays', [
             ['name' => 'Xperciainc Meal Tray 1 Compartment 500Ml', 'price' => 195.00],
             ['name' => 'Xperciainc Meal Tray 2 Compartment 750Ml', 'price' => 240.00],
             ['name' => 'Xperciainc Meal Tray 3 Compartment 1000Ml', 'price' => 285.00],
+            ['name' => 'Xperciainc 3 Compartment Meal Box Tray Mini', 'price' => 212.50],
+            ['name' => 'Xperciainc 4 Compartment Meal Box Tray', 'price' => 255.00],
             ['name' => 'Xperciainc Meal Tray Deep 1000Ml', 'price' => 300.00],
+        ]);
+
+        // Subcategory products (shown after parent products).
+        $this->seedSection($reusableMealTraysId, null, [
             ['name' => 'Xperciainc Reusable Meal Tray 750Ml', 'price' => 320.00],
+            ['name' => 'Xperciainc Reusable Meal Tray 1000Ml', 'price' => 345.00],
+            ['name' => 'Xperciainc Reusable 2 Comp Meal Tray', 'price' => 360.00],
+            ['name' => 'Xperciainc Reusable 3 Comp Meal Tray', 'price' => 385.00],
+        ]);
+
+        $this->seedSection($cornstarchMealTraysId, null, [
             ['name' => 'Xperciainc Cornstarch Meal Tray 1000Ml', 'price' => 275.00],
+            ['name' => 'Xperciainc Cornstarch Meal Tray Mini', 'price' => 230.00],
+            ['name' => 'Xperciainc Cornstarch 3 Comp Meal Tray', 'price' => 290.00],
+            ['name' => 'Xperciainc Cornstarch 5 Comp Meal Tray', 'price' => 310.00],
         ]);
 
         $this->seedSection($roundContainersId, 'is_round_containers', [
@@ -165,9 +184,41 @@ class ProductSeeder extends Seeder
             ['name' => 'Xperciainc Bagasse Takeaway Container 2 Comp', 'price' => 265.00],
             ['name' => 'Xperciainc Bagasse Takeaway Container 3 Comp', 'price' => 295.00],
         ]);
+
+        $paperProductsId = Category::where('slug', 'paper-products')->value('id') ?? $foodContainersId;
+
+        $this->seedSection($paperProductsId, 'is_paper_products', [
+            ['name' => 'Xperciainc Paper Cup 4 Oz', 'price' => 95.00],
+            ['name' => 'Xperciainc Paper Cup 8 Oz', 'price' => 110.00],
+            ['name' => 'Xperciainc Paper Cup 12 Oz', 'price' => 125.00],
+            ['name' => 'Xperciainc Paper Cup 16 Oz', 'price' => 140.00],
+            ['name' => 'Xperciainc Paper Bowl 500Ml', 'price' => 155.00],
+            ['name' => 'Xperciainc Paper Bowl 750Ml', 'price' => 175.00],
+            ['name' => 'Xperciainc Paper Plate 7 Inch', 'price' => 90.00],
+            ['name' => 'Xperciainc Paper Plate 9 Inch', 'price' => 105.00],
+            ['name' => 'Xperciainc Paper Straw Pack', 'price' => 70.00],
+            ['name' => 'Xperciainc Butter Paper Sheet Pack', 'price' => 120.00],
+            ['name' => 'Xperciainc Takeaway Paper Container Small', 'price' => 145.00],
+            ['name' => 'Xperciainc Takeaway Paper Container Medium', 'price' => 170.00],
+            ['name' => 'Xperciainc Takeaway Paper Container Large', 'price' => 195.00],
+            ['name' => 'Xperciainc Kraft Paper Bag Small', 'price' => 85.00],
+            ['name' => 'Xperciainc Kraft Paper Bag Medium', 'price' => 100.00],
+            ['name' => 'Xperciainc Kraft Paper Bag Large', 'price' => 120.00],
+            ['name' => 'Xperciainc Paper Napkin Pack', 'price' => 80.00],
+            ['name' => 'Xperciainc Paper Food Wrap Roll', 'price' => 135.00],
+        ]);
+
+        $this->seedSection($foodContainersId, 'is_new_arrivals', [
+            ['name' => 'Xperciainc New Arrival Eco Box 500Ml', 'price' => 185.00],
+            ['name' => 'Xperciainc New Arrival Eco Box 750Ml', 'price' => 215.00],
+            ['name' => 'Xperciainc New Arrival Clear Cup 12 Oz', 'price' => 145.00],
+            ['name' => 'Xperciainc New Arrival Clear Cup 16 Oz', 'price' => 165.00],
+            ['name' => 'Xperciainc New Arrival Meal Pack Set', 'price' => 275.00],
+            ['name' => 'Xperciainc New Arrival Sauce Cup Kit', 'price' => 125.00],
+        ]);
     }
 
-    private function seedSection(?int $categoryId, string $flag, array $products): void
+    private function seedSection(?int $categoryId, ?string $flag, array $products): void
     {
         $flags = [
             'is_best_seller' => false,
@@ -182,15 +233,30 @@ class ProductSeeder extends Seeder
             'is_bagasse_tableware' => false,
             'is_biodegradable_products' => false,
             'is_bagasse_takeaway_container' => false,
+            'is_paper_products' => false,
+            'is_new_arrivals' => false,
         ];
-        $flags[$flag] = true;
+
+        if ($flag) {
+            $flags[$flag] = true;
+        }
 
         foreach ($products as $index => $item) {
             Product::create([
                 'category_id' => $categoryId,
                 'name' => $item['name'],
+                'brand' => 'XPERCIAINC',
                 'slug' => Str::slug($item['name']),
                 'image' => null,
+                'short_description' => 'This tray contains 3 different compartments to segregate a variety of dry and liquid food. It is microwave & Freezer safe.',
+                'description' => '<p><strong>'.$item['name'].'</strong></p><p>Compact. Convenient. Classy.</p><p>Perfect for restaurants, cloud kitchens, catering, and takeaways. Durable build with a secure lid for mess-free packing and delivery.</p>',
+                'gallery' => null,
+                'pack_options' => [
+                    ['pcs' => 25, 'unit_price' => 8.5],
+                    ['pcs' => 100, 'unit_price' => 8],
+                    ['pcs' => 300, 'unit_price' => 7.6],
+                    ['pcs' => 500, 'unit_price' => 7.4],
+                ],
                 'price_from' => $item['price'],
                 'currency' => 'Rs.',
                 ...$flags,

@@ -77,14 +77,14 @@
                 {{-- Top row: all first categories --}}
                 @foreach ($topRow as $category)
                     <div class="collection-mega-block">
-                        <a href="{{ url('/collections/'.$category->slug) }}" class="collection-mega-title">
+                        <a href="{{ route('collections.show', $category->slug) }}" class="collection-mega-title">
                             {{ $category->name }}
                         </a>
                         @if ($category->children->isNotEmpty())
                             <ul class="collection-mega-list">
                                 @foreach ($category->children as $child)
                                     <li>
-                                        <a href="{{ url('/collections/'.$child->slug) }}" class="collection-mega-link">
+                                        <a href="{{ route('collections.show', $child->slug) }}" class="collection-mega-link">
                                             {{ $child->name }}
                                         </a>
                                     </li>
@@ -97,14 +97,14 @@
                 {{-- Bottom row: starts after top row ends (aligned across columns) --}}
                 @foreach ($bottomRow as $category)
                     <div class="collection-mega-block">
-                        <a href="{{ url('/collections/'.$category->slug) }}" class="collection-mega-title">
+                        <a href="{{ route('collections.show', $category->slug) }}" class="collection-mega-title">
                             {{ $category->name }}
                         </a>
                         @if ($category->children->isNotEmpty())
                             <ul class="collection-mega-list">
                                 @foreach ($category->children as $child)
                                     <li>
-                                        <a href="{{ url('/collections/'.$child->slug) }}" class="collection-mega-link">
+                                        <a href="{{ route('collections.show', $child->slug) }}" class="collection-mega-link">
                                             {{ $child->name }}
                                         </a>
                                     </li>
@@ -126,11 +126,11 @@
                 <p class="py-2 text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink/50">Our Collection</p>
                 @foreach ($menuColumns ?? [] as $column => $categories)
                     @foreach ($categories->sortBy('menu_row') as $category)
-                        <a href="{{ url('/collections/'.$category->slug) }}" class="block py-1.5 text-sm font-medium text-brand-ink">
+                        <a href="{{ route('collections.show', $category->slug) }}" class="block py-1.5 text-sm font-medium text-brand-ink">
                             {{ $category->name }}
                         </a>
                         @foreach ($category->children as $child)
-                            <a href="{{ url('/collections/'.$child->slug) }}" class="block py-1 pl-3 text-sm text-brand-ink/70">
+                            <a href="{{ route('collections.show', $child->slug) }}" class="block py-1 pl-3 text-sm text-brand-ink/70">
                                 {{ $child->name }}
                             </a>
                         @endforeach

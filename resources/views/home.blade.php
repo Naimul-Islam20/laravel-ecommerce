@@ -60,7 +60,7 @@
 
         <div class="collections-grid">
             @forelse ($collections ?? [] as $collection)
-                <a href="{{ url('/collections/'.$collection->slug) }}" class="collection-card">
+                <a href="{{ route('collections.show', $collection->slug) }}" class="collection-card">
                     <div class="collection-card-media">
                         @if ($collection->imageUrl())
                             <img src="{{ $collection->imageUrl() }}" alt="{{ $collection->name }}" loading="lazy">
@@ -88,7 +88,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($bestSellers ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -106,7 +106,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'best-sellers') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -118,7 +118,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($topSelling ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -136,7 +136,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'top-selling') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -148,7 +148,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($hingedBox ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -166,7 +166,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'hinged-box') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -178,7 +178,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($trending ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -196,7 +196,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'trending') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -208,7 +208,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($mealTrays ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -226,7 +226,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'meal-trays') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -238,7 +238,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($roundContainers ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -256,7 +256,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'round-containers') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -268,7 +268,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($rectangularContainers ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -286,7 +286,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'rectangular-containers') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -298,7 +298,7 @@
 
         <div class="best-sellers-grid best-sellers-grid--4">
             @forelse ($cornstarchProducts ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -316,7 +316,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'cornstarch-product') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -328,7 +328,7 @@
 
         <div class="best-sellers-grid best-sellers-grid--4">
             @forelse ($aluminiumFoilContainers ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -346,7 +346,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'aluminium-containers') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -358,7 +358,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($bagasseTableware ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -376,7 +376,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'bagasse-products') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -388,7 +388,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($biodegradableProducts ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -406,7 +406,7 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'biodegradable-products') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>
@@ -418,7 +418,7 @@
 
         <div class="best-sellers-grid">
             @forelse ($bagasseTakeawayContainers ?? [] as $product)
-                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -436,7 +436,67 @@
 
         <div class="best-sellers-actions">
             <div class="view-all-wrap">
-                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+                <a href="{{ route('collections.show', 'bagasse-takeaway-container') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="paper-products" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Paper Products</h2>
+
+        <div class="best-sellers-grid">
+            @forelse ($paperProducts ?? [] as $product)
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No paper products yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ route('collections.show', 'paper-products') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="new-arrivals" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">New Arrivals</h2>
+
+        <div class="best-sellers-grid">
+            @forelse ($newArrivals ?? [] as $product)
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No new arrivals yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ route('collections.show', 'new-arrivals') }}" class="view-all-btn">View all</a>
             </div>
         </div>
     </div>

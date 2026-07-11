@@ -39,6 +39,26 @@ class Category extends Model
         return $this->hasMany(self::class, 'parent_id')->orderBy('sort_order');
     }
 
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Category id plus active subcategory ids (for collection product listing).
+     */
+    public function collectionCategoryIds(): array
+    {
+        $ids = [$this->id];
+
+        $childIds = $this->children()
+            ->active()
+            ->pluck('id')
+            ->all();
+
+        return array_values(array_unique(array_merge($ids, $childIds)));
+    }
+
     public function scopeParents($query)
     {
         return $query->whereNull('parent_id');

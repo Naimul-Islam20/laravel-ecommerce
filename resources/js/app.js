@@ -13,8 +13,179 @@ document.addEventListener('DOMContentLoaded', () => {
     initCollectionMega();
     initSearchOverlay();
     initHeroSlider();
+    initProductDetail();
+    initCollectionFilters();
 });
 
+function initCollectionFilters() {
+    const form = document.querySelector('[data-collection-filters]');
+    if (!form) return;
+
+    const dropdowns = form.querySelectorAll('[data-filter-dropdown]');
+
+    dropdowns.forEach((dropdown) => {
+        const toggle = dropdown.querySelector('[data-filter-toggle]');
+        const menu = dropdown.querySelector('[data-filter-menu]');
+        if (!toggle || !menu) return;
+
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const willOpen = !dropdown.classList.contains('is-open');
+
+            dropdowns.forEach((item) => {
+                item.classList.remove('is-open');
+                item.querySelector('[data-filter-toggle]')?.setAttribute('aria-expanded', 'false');
+                const itemMenu = item.querySelector('[data-filter-menu]');
+                if (itemMenu) itemMenu.hidden = true;
+            });
+
+            if (willOpen) {
+                dropdown.classList.add('is-open');
+                toggle.setAttribute('aria-expanded', 'true');
+                menu.hidden = false;
+            }
+        });
+    });
+
+    form.querySelectorAll('input[type="radio"]').forEach((input) => {
+        input.addEventListener('change', () => form.submit());
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('[data-filter-dropdown]')) return;
+        dropdowns.forEach((item) => {
+            item.classList.remove('is-open');
+            item.querySelector('[data-filter-toggle]')?.setAttribute('aria-expanded', 'false');
+            const itemMenu = item.querySelector('[data-filter-menu]');
+            if (itemMenu) itemMenu.hidden = true;
+        });
+    });
+}
+
+function initProductDetail() {
+    const root = document.querySelector('[data-product-detail]');
+    if (!root) return;
+
+    const priceEl = root.querySelector('[data-product-price]');
+    const packBtns = root.querySelectorAll('[data-product-pack]');
+    const qtyInput = root.querySelector('[data-qty-input]');
+    const minusBtn = root.querySelector('[data-qty-minus]');
+    const plusBtn = root.querySelector('[data-qty-plus]');
+    const mainImage = root.querySelector('[data-product-main-image]');
+    const thumbs = root.querySelectorAll('[data-product-thumb]');
+
+    const setQty = (value) => {
+        const next = Math.max(1, Number(value) || 1);
+        qtyInput.value = String(next);
+    };
+
+    minusBtn?.addEventListener('click', () => setQty(Number(qtyInput.value) - 1));
+    plusBtn?.addEventListener('click', () => setQty(Number(qtyInput.value) + 1));
+    qtyInput?.addEventListener('change', () => setQty(qtyInput.value));
+
+    packBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            packBtns.forEach((item) => item.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            if (priceEl && btn.dataset.priceLabel) {
+                priceEl.textContent = btn.dataset.priceLabel;
+            }
+        });
+    });
+
+    thumbs.forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+            const src = thumb.dataset.image;
+            if (!src || !mainImage || mainImage.tagName !== 'IMG') return;
+            mainImage.src = src;
+            thumbs.forEach((item) => item.classList.remove('is-active'));
+            thumb.classList.add('is-active');
+        });
+    });
+
+    const zoomBtn = root.querySelector('[data-product-zoom]');
+    const lightbox = document.querySelector('[data-product-lightbox]');
+    const lightboxImage = lightbox?.querySelector('[data-product-lightbox-image]');
+    const lightboxPlaceholder = lightbox?.querySelector('[data-product-lightbox-placeholder]');
+    const lightboxClose = lightbox?.querySelectorAll('[data-product-lightbox-close]');
+
+    const openLightbox = () => {
+        if (!lightbox) return;
+
+        const hasImage = mainImage?.tagName === 'IMG' && mainImage.getAttribute('src');
+
+        if (hasImage && lightboxImage) {
+            lightboxImage.hidden = false;
+            lightboxImage.src = mainImage.src;
+            lightboxImage.alt = mainImage.alt || '';
+            if (lightboxPlaceholder) lightboxPlaceholder.hidden = true;
+        } else {
+            if (lightboxImage) {
+                lightboxImage.hidden = true;
+                lightboxImage.removeAttribute('src');
+            }
+            if (lightboxPlaceholder) lightboxPlaceholder.hidden = false;
+        }
+
+        lightbox.hidden = false;
+        document.body.classList.add('product-lightbox-open');
+        requestAnimationFrame(() => lightbox.classList.add('is-open'));
+    };
+
+    const closeLightbox = () => {
+        if (!lightbox) return;
+        lightbox.classList.remove('is-open');
+        document.body.classList.remove('product-lightbox-open');
+        const onEnd = () => {
+            lightbox.hidden = true;
+            lightbox.removeEventListener('transitionend', onEnd);
+        };
+        lightbox.addEventListener('transitionend', onEnd);
+        setTimeout(() => {
+            if (!lightbox.classList.contains('is-open')) lightbox.hidden = true;
+        }, 280);
+    };
+
+    zoomBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLightbox();
+    });
+
+    const galleryMain = root.querySelector('.product-gallery-main');
+    galleryMain?.addEventListener('click', (e) => {
+        if (e.target.closest('[data-product-zoom]')) return;
+        openLightbox();
+    });
+    galleryMain?.style.setProperty('cursor', 'zoom-in');
+
+    const accordion = root.querySelector('[data-product-accordion]');
+    const accordionTrigger = accordion?.querySelector('[data-accordion-trigger]');
+    const accordionPanel = accordion?.querySelector('[data-accordion-panel]');
+
+    accordionTrigger?.addEventListener('click', () => {
+        const isOpen = accordion.classList.toggle('is-open');
+        accordionTrigger.setAttribute('aria-expanded', String(isOpen));
+        accordionPanel.hidden = !isOpen;
+    });
+
+    lightboxClose?.forEach((el) => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeLightbox();
+        });
+    });
+
+    lightbox?.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox?.classList.contains('is-open')) {
+            closeLightbox();
+        }
+    });
+}
 function initSearchOverlay() {
     const overlay = document.querySelector('[data-search-overlay]');
     const openBtns = document.querySelectorAll('[data-search-open]');
