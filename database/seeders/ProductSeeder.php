@@ -105,6 +105,66 @@ class ProductSeeder extends Seeder
             ['name' => 'Xperciainc Rectangular Container 1000Ml', 'price' => 290.00],
             ['name' => 'Xperciainc Rectangular Container 2 Comp 1000Ml', 'price' => 330.00],
         ]);
+
+        $cornstarchId = Category::where('slug', 'cornstarch-product')->value('id') ?? $foodContainersId;
+        $aluminiumId = Category::where('slug', 'aluminium-containers')->value('id') ?? $foodContainersId;
+
+        $this->seedSection($cornstarchId, 'is_cornstarch_product', [
+            ['name' => 'Xperciainc Cornstarch Clamshell 500Ml', 'price' => 210.00],
+            ['name' => 'Xperciainc Cornstarch Clamshell 750Ml', 'price' => 245.00],
+            ['name' => 'Xperciainc Cornstarch Bowl 500Ml', 'price' => 190.00],
+            ['name' => 'Xperciainc Cornstarch Plate 9 Inch', 'price' => 155.00],
+        ]);
+
+        $this->seedSection($aluminiumId, 'is_aluminium_foil_container', [
+            ['name' => 'Xperciainc Aluminium Foil Container Small', 'price' => 145.00],
+            ['name' => 'Xperciainc Aluminium Foil Container Medium', 'price' => 175.00],
+            ['name' => 'Xperciainc Aluminium Foil Container Large', 'price' => 210.00],
+            ['name' => 'Xperciainc Aluminium Foil Container XL', 'price' => 250.00],
+        ]);
+
+        $bagasseId = Category::where('slug', 'bagasse-products')->value('id') ?? $foodContainersId;
+
+        $this->seedSection($bagasseId, 'is_bagasse_tableware', [
+            ['name' => 'Xperciainc Bagasse Plate 6 Inch', 'price' => 120.00],
+            ['name' => 'Xperciainc Bagasse Plate 9 Inch', 'price' => 145.00],
+            ['name' => 'Xperciainc Bagasse Bowl 500Ml', 'price' => 165.00],
+            ['name' => 'Xperciainc Bagasse Bowl 750Ml', 'price' => 185.00],
+            ['name' => 'Xperciainc Bagasse Clamshell 500Ml', 'price' => 195.00],
+            ['name' => 'Xperciainc Bagasse Clamshell 750Ml', 'price' => 225.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Box 500Ml', 'price' => 200.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Box 750Ml', 'price' => 230.00],
+            ['name' => 'Xperciainc Bagasse Tray 1 Comp', 'price' => 175.00],
+            ['name' => 'Xperciainc Bagasse Tray 2 Comp', 'price' => 210.00],
+            ['name' => 'Xperciainc Bagasse Cup 8 Oz', 'price' => 110.00],
+            ['name' => 'Xperciainc Bagasse Cup 12 Oz', 'price' => 130.00],
+        ]);
+
+        $this->seedSection($foodContainersId, 'is_biodegradable_products', [
+            ['name' => 'Xperciainc Biodegradable Cutlery Set', 'price' => 95.00],
+            ['name' => 'Xperciainc Biodegradable Spoon Pack', 'price' => 85.00],
+            ['name' => 'Xperciainc Biodegradable Fork Pack', 'price' => 85.00],
+            ['name' => 'Xperciainc Biodegradable Knife Pack', 'price' => 85.00],
+            ['name' => 'Xperciainc Biodegradable Straw Pack', 'price' => 75.00],
+            ['name' => 'Xperciainc Biodegradable Food Wrap', 'price' => 140.00],
+            ['name' => 'Xperciainc Biodegradable Trash Bag Small', 'price' => 160.00],
+            ['name' => 'Xperciainc Biodegradable Trash Bag Large', 'price' => 190.00],
+            ['name' => 'Xperciainc Biodegradable Lunch Box', 'price' => 220.00],
+            ['name' => 'Xperciainc Biodegradable Salad Bowl', 'price' => 205.00],
+            ['name' => 'Xperciainc Biodegradable Soup Cup', 'price' => 155.00],
+            ['name' => 'Xperciainc Biodegradable Portion Cup', 'price' => 115.00],
+        ]);
+
+        $bagasseTakeawayId = Category::where('slug', 'bagasse-takeaway-container')->value('id') ?? $bagasseId;
+
+        $this->seedSection($bagasseTakeawayId, 'is_bagasse_takeaway_container', [
+            ['name' => 'Xperciainc Bagasse Takeaway Container 250Ml', 'price' => 155.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Container 500Ml', 'price' => 185.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Container 750Ml', 'price' => 215.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Container 1000Ml', 'price' => 245.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Container 2 Comp', 'price' => 265.00],
+            ['name' => 'Xperciainc Bagasse Takeaway Container 3 Comp', 'price' => 295.00],
+        ]);
     }
 
     private function seedSection(?int $categoryId, string $flag, array $products): void
@@ -117,6 +177,11 @@ class ProductSeeder extends Seeder
             'is_meal_trays' => false,
             'is_round_containers' => false,
             'is_rectangular_container' => false,
+            'is_cornstarch_product' => false,
+            'is_aluminium_foil_container' => false,
+            'is_bagasse_tableware' => false,
+            'is_biodegradable_products' => false,
+            'is_bagasse_takeaway_container' => false,
         ];
         $flags[$flag] = true;
 

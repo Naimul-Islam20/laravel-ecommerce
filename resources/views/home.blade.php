@@ -292,6 +292,156 @@
     </div>
 </section>
 
+<section id="cornstarch-product" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Cornstarch Product</h2>
+
+        <div class="best-sellers-grid best-sellers-grid--4">
+            @forelse ($cornstarchProducts ?? [] as $product)
+                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No cornstarch products yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="aluminium-foil-container" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Aluminium Foil Container</h2>
+
+        <div class="best-sellers-grid best-sellers-grid--4">
+            @forelse ($aluminiumFoilContainers ?? [] as $product)
+                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No aluminium foil containers yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="bagasse-tableware" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Bagasse Tableware</h2>
+
+        <div class="best-sellers-grid">
+            @forelse ($bagasseTableware ?? [] as $product)
+                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No bagasse tableware yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="biodegradable-products" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Biodegradable Products</h2>
+
+        <div class="best-sellers-grid">
+            @forelse ($biodegradableProducts ?? [] as $product)
+                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No biodegradable products yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="bagasse-takeaway-container" class="best-sellers-section">
+    <div class="container">
+        <h2 class="best-sellers-heading">Bagasse Takeaway Container</h2>
+
+        <div class="best-sellers-grid">
+            @forelse ($bagasseTakeawayContainers ?? [] as $product)
+                <a href="{{ url('/products/'.$product->slug) }}" class="product-card">
+                    <div class="product-card-media">
+                        @if ($product->imageUrl())
+                            <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
+                        @else
+                            <div class="product-card-placeholder" aria-hidden="true"></div>
+                        @endif
+                    </div>
+                    <h3 class="product-card-title">{{ $product->name }}</h3>
+                    <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-brand-ink/55">No bagasse takeaway containers yet.</p>
+            @endforelse
+        </div>
+
+        <div class="best-sellers-actions">
+            <div class="view-all-wrap">
+                <a href="{{ url('/shop') }}" class="view-all-btn">View all</a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div id="shop" class="sr-only" aria-hidden="true"></div>
 <div id="bulk" class="sr-only" aria-hidden="true"></div>
 @endsection

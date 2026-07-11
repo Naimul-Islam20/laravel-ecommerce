@@ -13,6 +13,11 @@ Route::get('/', function () {
     $mealTrays = Product::mealTrays()->get();
     $roundContainers = Product::roundContainers()->get();
     $rectangularContainers = Product::rectangularContainer()->get();
+    $cornstarchProducts = Product::cornstarchProduct()->get();
+    $aluminiumFoilContainers = Product::aluminiumFoilContainer()->get();
+    $bagasseTableware = Product::bagasseTableware()->get();
+    $biodegradableProducts = Product::biodegradableProducts()->get();
+    $bagasseTakeawayContainers = Product::bagasseTakeawayContainer()->get();
 
     return view('home', compact(
         'collections',
@@ -23,5 +28,10 @@ Route::get('/', function () {
         'mealTrays',
         'roundContainers',
         'rectangularContainers',
+        'cornstarchProducts',
+        'aluminiumFoilContainers',
+        'bagasseTableware',
+        'biodegradableProducts',
+        'bagasseTakeawayContainers',
     ));
 })->name('home');

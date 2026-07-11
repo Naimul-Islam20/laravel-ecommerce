@@ -21,6 +21,11 @@ class Product extends Model
         'is_meal_trays',
         'is_round_containers',
         'is_rectangular_container',
+        'is_cornstarch_product',
+        'is_aluminium_foil_container',
+        'is_bagasse_tableware',
+        'is_biodegradable_products',
+        'is_bagasse_takeaway_container',
         'is_active',
         'sort_order',
     ];
@@ -36,6 +41,11 @@ class Product extends Model
             'is_meal_trays' => 'boolean',
             'is_round_containers' => 'boolean',
             'is_rectangular_container' => 'boolean',
+            'is_cornstarch_product' => 'boolean',
+            'is_aluminium_foil_container' => 'boolean',
+            'is_bagasse_tableware' => 'boolean',
+            'is_biodegradable_products' => 'boolean',
+            'is_bagasse_takeaway_container' => 'boolean',
             'is_active' => 'boolean',
         ];
     }
@@ -96,6 +106,41 @@ class Product extends Model
     {
         return $query->active()
             ->where('is_rectangular_container', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeCornstarchProduct($query)
+    {
+        return $query->active()
+            ->where('is_cornstarch_product', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeAluminiumFoilContainer($query)
+    {
+        return $query->active()
+            ->where('is_aluminium_foil_container', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeBagasseTableware($query)
+    {
+        return $query->active()
+            ->where('is_bagasse_tableware', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeBiodegradableProducts($query)
+    {
+        return $query->active()
+            ->where('is_biodegradable_products', true)
+            ->orderBy('sort_order');
+    }
+
+    public function scopeBagasseTakeawayContainer($query)
+    {
+        return $query->active()
+            ->where('is_bagasse_takeaway_container', true)
             ->orderBy('sort_order');
     }
 
