@@ -247,7 +247,7 @@ class ProductSeeder extends Seeder
                 'name' => $item['name'],
                 'brand' => 'XPERCIAINC',
                 'slug' => Str::slug($item['name']),
-                'image' => null,
+                'image' => 'images/item-1.webp',
                 'short_description' => 'This tray contains 3 different compartments to segregate a variety of dry and liquid food. It is microwave & Freezer safe.',
                 'description' => '<p><strong>'.$item['name'].'</strong></p><p>Compact. Convenient. Classy.</p><p>Perfect for restaurants, cloud kitchens, catering, and takeaways. Durable build with a secure lid for mess-free packing and delivery.</p>',
                 'gallery' => null,

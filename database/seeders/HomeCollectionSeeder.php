@@ -38,7 +38,7 @@ class HomeCollectionSeeder extends Seeder
                     'menu_row' => null,
                     'sort_order' => 0,
                     'is_active' => true,
-                    'image' => null,
+                    'image' => 'images/category-1.webp',
                     'show_on_home' => true,
                     'home_sort_order' => $item['order'],
                 ]);
@@ -46,6 +46,7 @@ class HomeCollectionSeeder extends Seeder
                 $category->update([
                     'show_on_home' => true,
                     'home_sort_order' => $item['order'],
+                    'image' => $category->image ?: 'images/category-1.webp',
                     // keep existing name for menu; Food Containers stays as is in menu
                 ]);
             }

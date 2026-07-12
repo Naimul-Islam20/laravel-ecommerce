@@ -22,6 +22,15 @@ function initCollectionFilters() {
     if (!form) return;
 
     const dropdowns = form.querySelectorAll('[data-filter-dropdown]');
+    const grid = document.querySelector('[data-collection-grid]');
+    const countEl = document.querySelector('[data-collection-count]');
+    const countWrap = document.querySelector('[data-collection-count-wrap]');
+    const countSpinner = document.querySelector('[data-collection-count-spinner]');
+    const cards = Array.from(document.querySelectorAll('[data-product-card]'));
+    const minInput = form.querySelector('[data-price-min]');
+    const maxInput = form.querySelector('[data-price-max]');
+    const resetBtn = form.querySelector('[data-price-reset]');
+    const emptyFiltered = document.querySelector('[data-collection-empty-filtered]');
 
     dropdowns.forEach((dropdown) => {
         const toggle = dropdown.querySelector('[data-filter-toggle]');
@@ -48,6 +57,84 @@ function initCollectionFilters() {
         });
     });
 
+    const updateCount = (visible) => {
+        if (!countEl) return;
+        countEl.textContent = `${visible} ${visible === 1 ? 'product' : 'products'}`;
+    };
+
+    const setLoading = (loading) => {
+        countWrap?.classList.toggle('is-loading', loading);
+        grid?.classList.toggle('is-filtering', loading);
+        if (countSpinner) countSpinner.hidden = !loading;
+        if (countEl) countEl.hidden = loading;
+    };
+
+    const syncUrl = () => {
+        const params = new URLSearchParams(new FormData(form));
+        ['min_price', 'max_price', 'availability', 'sort'].forEach((key) => {
+            const value = params.get(key);
+            if (value === null || value === '') params.delete(key);
+        });
+        const query = params.toString();
+        const next = query ? `${form.action}?${query}` : form.action;
+        window.history.replaceState({}, '', next);
+    };
+
+    const syncFilledState = (input) => {
+        const wrap = input?.closest('.collection-price-input-wrap');
+        if (!wrap) return;
+        wrap.classList.toggle('is-filled', (input.value || '').trim() !== '');
+    };
+
+    const applyPriceFilter = () => {
+        const minRaw = minInput?.value?.trim() ?? '';
+        const maxRaw = maxInput?.value?.trim() ?? '';
+        const hasMin = minRaw !== '' && Number.isFinite(Number(minRaw));
+        const hasMax = maxRaw !== '' && Number.isFinite(Number(maxRaw));
+        const minVal = hasMin ? Number(minRaw) : 0;
+        const maxVal = hasMax ? Number(maxRaw) : Number.POSITIVE_INFINITY;
+        let visible = 0;
+
+        cards.forEach((card) => {
+            const price = Number(card.dataset.price || 0);
+            const show = price >= minVal && price <= maxVal;
+            card.hidden = !show;
+            if (show) visible += 1;
+        });
+
+        updateCount(visible);
+        if (emptyFiltered) emptyFiltered.hidden = visible !== 0 || cards.length === 0;
+        syncUrl();
+        setLoading(false);
+    };
+
+    let priceTimer = null;
+    const schedulePriceFilter = () => {
+        syncFilledState(minInput);
+        syncFilledState(maxInput);
+        setLoading(true);
+        clearTimeout(priceTimer);
+        priceTimer = setTimeout(applyPriceFilter, 320);
+    };
+
+    minInput?.addEventListener('input', schedulePriceFilter);
+    maxInput?.addEventListener('input', schedulePriceFilter);
+    minInput?.addEventListener('change', schedulePriceFilter);
+    maxInput?.addEventListener('change', schedulePriceFilter);
+
+    resetBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (minInput) minInput.value = '';
+        if (maxInput) maxInput.value = '';
+        schedulePriceFilter();
+    });
+
+    // Keep price menu open while typing / resetting
+    form.querySelector('[data-price-filter]')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
     form.querySelectorAll('input[type="radio"]').forEach((input) => {
         input.addEventListener('change', () => form.submit());
     });
@@ -61,6 +148,12 @@ function initCollectionFilters() {
             if (itemMenu) itemMenu.hidden = true;
         });
     });
+
+    if (minInput) minInput.value = '';
+    if (maxInput) maxInput.value = '';
+    syncFilledState(minInput);
+    syncFilledState(maxInput);
+    applyPriceFilter();
 }
 
 function initProductDetail() {

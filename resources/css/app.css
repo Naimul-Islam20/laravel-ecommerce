@@ -1281,16 +1281,117 @@ body.product-lightbox-open {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
-.collection-filter-menu--price {
-    min-width: 13rem;
-}
-
 .collection-filter.is-open .collection-filter-menu {
     display: block;
 }
 
 .collection-filter-menu[hidden] {
     display: none;
+}
+
+.collection-filter-menu--price {
+    min-width: 21rem;
+    padding: 1.15rem 1.25rem 1.3rem;
+}
+
+.collection-price-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-bottom: 1.1rem;
+}
+
+.collection-price-highest {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: #111;
+}
+
+.collection-price-reset {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-size: 0.9375rem;
+    color: #111;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.collection-price-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    padding-top: 0.45rem;
+}
+
+.collection-price-field {
+    display: block;
+}
+
+.collection-price-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.collection-price-currency {
+    flex-shrink: 0;
+    font-size: 0.9375rem;
+    color: #111;
+    line-height: 1;
+}
+
+.collection-price-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    border: 1px solid rgba(17, 17, 17, 0.2);
+    padding: 0.75rem 0.65rem 0.5rem;
+    background: #fff;
+}
+
+.collection-price-field-label {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 0.25rem;
+    font-size: 0.9375rem;
+    line-height: 1;
+    color: rgba(17, 17, 17, 0.55);
+    background: #fff;
+    pointer-events: none;
+    transition: top 0.15s ease, transform 0.15s ease, font-size 0.15s ease, color 0.15s ease;
+}
+
+.collection-price-input-wrap:focus-within .collection-price-field-label,
+.collection-price-input-wrap.is-filled .collection-price-field-label {
+    top: 0;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #111;
+}
+
+.collection-price-input-wrap input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    font-size: 0.9375rem;
+    color: #111;
+    outline: none;
+    background: transparent;
+    -moz-appearance: textfield;
+}
+
+.collection-price-input-wrap input::-webkit-outer-spin-button,
+.collection-price-input-wrap input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .collection-filter-option {
@@ -1303,47 +1404,45 @@ body.product-lightbox-open {
     cursor: pointer;
 }
 
-.collection-price-fields {
-    display: grid;
-    gap: 0.55rem;
-}
-
-.collection-price-fields label {
-    display: grid;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    color: rgba(17, 17, 17, 0.7);
-}
-
-.collection-price-fields input {
-    width: 100%;
-    border: 1px solid rgba(17, 17, 17, 0.18);
-    padding: 0.4rem 0.5rem;
-    font-size: 0.8125rem;
-    outline: none;
-}
-
-.collection-filter-apply {
-    margin-top: 0.65rem;
-    width: 100%;
-    border: 1px solid #111;
-    background: #111;
-    color: #fff;
-    padding: 0.45rem 0.75rem;
-    font-size: 0.8125rem;
-    cursor: pointer;
-}
-
 .collection-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 5.5rem;
     margin: 0;
     font-size: 0.875rem;
     color: #111;
+}
+
+.collection-count-spinner {
+    width: 0.95rem;
+    height: 0.95rem;
+    border: 1.5px solid rgba(17, 17, 17, 0.18);
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: collection-spin 0.65s linear infinite;
+}
+
+.collection-count-spinner[hidden] {
+    display: none;
+}
+
+@keyframes collection-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .collection-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 0.45rem;
+    transition: opacity 0.2s ease;
+}
+
+.collection-grid.is-filtering {
+    opacity: 0.35;
+    pointer-events: none;
 }
 
 @media (min-width: 640px) {

@@ -171,24 +171,18 @@ class Product extends Model
 
     public function imageUrl(): ?string
     {
-        if (! $this->image) {
-            return null;
+        $path = $this->image ?: 'images/item-1.webp';
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
         }
 
-        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
-            return $this->image;
-        }
-
-        return asset($this->image);
+        return asset($path);
     }
 
     public function galleryUrls(): array
     {
-        $urls = [];
-
-        if ($this->imageUrl()) {
-            $urls[] = $this->imageUrl();
-        }
+        $urls = [$this->imageUrl()];
 
         foreach ($this->gallery ?? [] as $path) {
             if (! $path) {
@@ -202,6 +196,11 @@ class Product extends Model
             if (! in_array($url, $urls, true)) {
                 $urls[] = $url;
             }
+        }
+
+        // Keep at least two thumbs on detail page when only one image exists.
+        if (count($urls) === 1) {
+            $urls[] = $urls[0];
         }
 
         return $urls;

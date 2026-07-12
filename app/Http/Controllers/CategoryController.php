@@ -54,18 +54,20 @@ class CategoryController extends Controller
             ->active()
             ->whereIn('category_id', $categoryIds);
 
-        $this->applyFilters($query, $request);
+        $this->applyFilters($query, $request, applyPrice: false);
         $query->orderByRaw($this->categoryGroupOrderSql($category));
         $this->applySort($query, $request);
 
         $products = $query->get();
+        $highestPrice = (float) ($products->max('price_from') ?? 0);
 
         return view('collections.show', [
             'title' => $category->name,
             'collectionSlug' => $category->slug,
             'products' => $products,
             'productCount' => $products->count(),
-            'filters' => $this->filterState($request),
+            'highestPrice' => $highestPrice,
+            'filters' => $this->filterState($request, $highestPrice),
         ]);
     }
 
@@ -75,27 +77,33 @@ class CategoryController extends Controller
 
         $query = Product::query()->{$scope}();
 
-        $this->applyFilters($query, $request);
+        $this->applyFilters($query, $request, applyPrice: false);
         $this->applySort($query, $request);
 
         $products = $query->get();
+        $highestPrice = (float) ($products->max('price_from') ?? 0);
 
         return view('collections.show', [
             'title' => $section['name'],
             'collectionSlug' => $slug,
             'products' => $products,
             'productCount' => $products->count(),
-            'filters' => $this->filterState($request),
+            'highestPrice' => $highestPrice,
+            'filters' => $this->filterState($request, $highestPrice),
         ]);
     }
 
-    private function applyFilters(Builder $query, Request $request): void
+    private function applyFilters(Builder $query, Request $request, bool $applyPrice = true): void
     {
         $availability = $request->string('availability')->toString();
         if ($availability === 'in-stock') {
             $query->where('is_active', true);
         } elseif ($availability === 'out-of-stock') {
             $query->where('is_active', false);
+        }
+
+        if (! $applyPrice) {
+            return;
         }
 
         $minPrice = $request->input('min_price');
@@ -121,12 +129,22 @@ class CategoryController extends Controller
         };
     }
 
-    private function filterState(Request $request): array
+    private function filterState(Request $request, float $highestPrice): array
     {
+        $maxPrice = $request->input('max_price');
+        if ($maxPrice === null || $maxPrice === '' || ! is_numeric($maxPrice)) {
+            $maxPrice = '';
+        }
+
+        $minPrice = $request->input('min_price');
+        if ($minPrice === null || $minPrice === '' || ! is_numeric($minPrice)) {
+            $minPrice = '';
+        }
+
         return [
             'availability' => $request->string('availability')->toString(),
-            'min_price' => $request->input('min_price'),
-            'max_price' => $request->input('max_price'),
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
             'sort' => $request->string('sort')->toString() ?: 'featured',
         ];
     }

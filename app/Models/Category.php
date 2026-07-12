@@ -89,14 +89,12 @@ class Category extends Model
 
     public function imageUrl(): ?string
     {
-        if (! $this->image) {
-            return null;
+        $path = $this->image ?: 'images/category-1.webp';
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
         }
 
-        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
-            return $this->image;
-        }
-
-        return asset($this->image);
+        return asset($path);
     }
 }

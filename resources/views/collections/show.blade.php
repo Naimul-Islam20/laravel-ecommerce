@@ -35,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="collection-filter" data-filter-dropdown>
+                <div class="collection-filter" data-filter-dropdown data-price-filter>
                     <button type="button" class="collection-filter-btn" data-filter-toggle aria-expanded="false">
                         Price
                         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -43,17 +43,49 @@
                         </svg>
                     </button>
                     <div class="collection-filter-menu collection-filter-menu--price" data-filter-menu hidden>
+                        <div class="collection-price-head">
+                            <p class="collection-price-highest">
+                                The highest price is Rs. {{ number_format($highestPrice ?? 0, 2) }}
+                            </p>
+                            <button type="button" class="collection-price-reset" data-price-reset>Reset</button>
+                        </div>
+
                         <div class="collection-price-fields">
-                            <label>
-                                <span>Min</span>
-                                <input type="number" name="min_price" min="0" step="0.01" value="{{ $filters['min_price'] ?? '' }}" placeholder="0">
+                            <label class="collection-price-field">
+                                <span class="collection-price-row">
+                                    <span class="collection-price-currency">₹</span>
+                                    <span class="collection-price-input-wrap">
+                                        <input
+                                            type="text"
+                                            name="min_price"
+                                            inputmode="decimal"
+                                            autocomplete="off"
+                                            value=""
+                                            data-price-min
+                                            placeholder=" "
+                                        >
+                                        <span class="collection-price-field-label">From</span>
+                                    </span>
+                                </span>
                             </label>
-                            <label>
-                                <span>Max</span>
-                                <input type="number" name="max_price" min="0" step="0.01" value="{{ $filters['max_price'] ?? '' }}" placeholder="Any">
+                            <label class="collection-price-field">
+                                <span class="collection-price-row">
+                                    <span class="collection-price-currency">₹</span>
+                                    <span class="collection-price-input-wrap">
+                                        <input
+                                            type="text"
+                                            name="max_price"
+                                            inputmode="decimal"
+                                            autocomplete="off"
+                                            value=""
+                                            data-price-max
+                                            placeholder=" "
+                                        >
+                                        <span class="collection-price-field-label">To</span>
+                                    </span>
+                                </span>
                             </label>
                         </div>
-                        <button type="submit" class="collection-filter-apply">Apply</button>
                     </div>
                 </div>
             </div>
@@ -101,15 +133,23 @@
                     </div>
                 </div>
 
-                <p class="collection-count">
-                    {{ $productCount }} {{ $productCount === 1 ? 'product' : 'products' }}
+                <p class="collection-count" data-collection-count-wrap>
+                    <span class="collection-count-spinner" data-collection-count-spinner hidden aria-hidden="true"></span>
+                    <span data-collection-count>
+                        {{ $productCount }} {{ $productCount === 1 ? 'product' : 'products' }}
+                    </span>
                 </p>
             </div>
         </form>
 
-        <div class="collection-grid">
+        <div class="collection-grid" data-collection-grid>
             @forelse ($products as $product)
-                <a href="{{ route('products.show', $product->slug) }}" class="product-card">
+                <a
+                    href="{{ route('products.show', $product->slug) }}"
+                    class="product-card"
+                    data-product-card
+                    data-price="{{ (float) $product->price_from }}"
+                >
                     <div class="product-card-media">
                         @if ($product->imageUrl())
                             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
@@ -121,8 +161,9 @@
                     <p class="product-card-price">{{ $product->formattedPriceFrom() }}</p>
                 </a>
             @empty
-                <p class="collection-empty">No products found in this collection.</p>
+                <p class="collection-empty" data-collection-empty>No products found in this collection.</p>
             @endforelse
+            <p class="collection-empty" data-collection-empty-filtered hidden>No products found in this price range.</p>
         </div>
     </div>
 </section>
