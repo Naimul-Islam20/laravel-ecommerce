@@ -15,7 +15,47 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroSlider();
     initProductDetail();
     initCollectionFilters();
+    initScrollReveal();
 });
+
+function initScrollReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const sections = document.querySelectorAll('.collections-section, .best-sellers-section');
+    if (!sections.length) return;
+
+    const items = [];
+
+    sections.forEach((section) => {
+        const targets = section.querySelectorAll(
+            '.collections-heading, .best-sellers-heading, .collection-card, .product-card, .view-all-wrap'
+        );
+
+        targets.forEach((el, index) => {
+            el.classList.add('scroll-reveal');
+            el.style.setProperty('--reveal-order', String(Math.min(index, 8)));
+            items.push(el);
+        });
+    });
+
+    if (!items.length) return;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+            });
+        },
+        {
+            threshold: 0.12,
+            rootMargin: '0px 0px -6% 0px',
+        }
+    );
+
+    items.forEach((el) => observer.observe(el));
+}
 
 function initCollectionFilters() {
     const form = document.querySelector('[data-collection-filters]');
@@ -29,7 +69,10 @@ function initCollectionFilters() {
     const cards = Array.from(document.querySelectorAll('[data-product-card]'));
     const minInput = form.querySelector('[data-price-min]');
     const maxInput = form.querySelector('[data-price-max]');
-    const resetBtn = form.querySelector('[data-price-reset]');
+    const priceResetBtn = form.querySelector('[data-price-reset]');
+    const availabilityOptions = Array.from(form.querySelectorAll('[data-availability-option]'));
+    const availabilityResetBtn = form.querySelector('[data-availability-reset]');
+    const availabilitySelected = form.querySelector('[data-availability-selected]');
     const emptyFiltered = document.querySelector('[data-collection-empty-filtered]');
 
     dropdowns.forEach((dropdown) => {
@@ -62,6 +105,12 @@ function initCollectionFilters() {
         countEl.textContent = `${visible} ${visible === 1 ? 'product' : 'products'}`;
     };
 
+    const updateAvailabilitySelected = () => {
+        if (!availabilitySelected) return;
+        const selected = availabilityOptions.filter((input) => input.checked).length;
+        availabilitySelected.textContent = `${selected} selected`;
+    };
+
     const setLoading = (loading) => {
         countWrap?.classList.toggle('is-loading', loading);
         grid?.classList.toggle('is-filtering', loading);
@@ -70,11 +119,19 @@ function initCollectionFilters() {
     };
 
     const syncUrl = () => {
-        const params = new URLSearchParams(new FormData(form));
-        ['min_price', 'max_price', 'availability', 'sort'].forEach((key) => {
-            const value = params.get(key);
-            if (value === null || value === '') params.delete(key);
+        const params = new URLSearchParams();
+        const sort = form.querySelector('input[name="sort"]:checked')?.value;
+        if (sort && sort !== 'featured') params.set('sort', sort);
+
+        const minRaw = minInput?.value?.trim() ?? '';
+        const maxRaw = maxInput?.value?.trim() ?? '';
+        if (minRaw !== '') params.set('min_price', minRaw);
+        if (maxRaw !== '') params.set('max_price', maxRaw);
+
+        availabilityOptions.forEach((input) => {
+            if (input.checked) params.append('availability[]', input.value);
         });
+
         const query = params.toString();
         const next = query ? `${form.action}?${query}` : form.action;
         window.history.replaceState({}, '', next);
@@ -86,56 +143,81 @@ function initCollectionFilters() {
         wrap.classList.toggle('is-filled', (input.value || '').trim() !== '');
     };
 
-    const applyPriceFilter = () => {
+    const applyFilters = () => {
         const minRaw = minInput?.value?.trim() ?? '';
         const maxRaw = maxInput?.value?.trim() ?? '';
         const hasMin = minRaw !== '' && Number.isFinite(Number(minRaw));
         const hasMax = maxRaw !== '' && Number.isFinite(Number(maxRaw));
         const minVal = hasMin ? Number(minRaw) : 0;
         const maxVal = hasMax ? Number(maxRaw) : Number.POSITIVE_INFINITY;
+        const selectedAvailability = availabilityOptions
+            .filter((input) => input.checked)
+            .map((input) => input.value);
         let visible = 0;
 
         cards.forEach((card) => {
             const price = Number(card.dataset.price || 0);
-            const show = price >= minVal && price <= maxVal;
+            const availability = card.dataset.availability || 'in-stock';
+            const priceOk = price >= minVal && price <= maxVal;
+            const availabilityOk = selectedAvailability.length === 0
+                || selectedAvailability.includes(availability);
+            const show = priceOk && availabilityOk;
             card.hidden = !show;
             if (show) visible += 1;
         });
 
         updateCount(visible);
+        updateAvailabilitySelected();
         if (emptyFiltered) emptyFiltered.hidden = visible !== 0 || cards.length === 0;
         syncUrl();
         setLoading(false);
     };
 
-    let priceTimer = null;
-    const schedulePriceFilter = () => {
+    let filterTimer = null;
+    const scheduleFilters = () => {
         syncFilledState(minInput);
         syncFilledState(maxInput);
+        updateAvailabilitySelected();
         setLoading(true);
-        clearTimeout(priceTimer);
-        priceTimer = setTimeout(applyPriceFilter, 320);
+        clearTimeout(filterTimer);
+        filterTimer = setTimeout(applyFilters, 320);
     };
 
-    minInput?.addEventListener('input', schedulePriceFilter);
-    maxInput?.addEventListener('input', schedulePriceFilter);
-    minInput?.addEventListener('change', schedulePriceFilter);
-    maxInput?.addEventListener('change', schedulePriceFilter);
+    minInput?.addEventListener('input', scheduleFilters);
+    maxInput?.addEventListener('input', scheduleFilters);
+    minInput?.addEventListener('change', scheduleFilters);
+    maxInput?.addEventListener('change', scheduleFilters);
 
-    resetBtn?.addEventListener('click', (e) => {
+    availabilityOptions.forEach((input) => {
+        input.addEventListener('change', scheduleFilters);
+    });
+
+    priceResetBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (minInput) minInput.value = '';
         if (maxInput) maxInput.value = '';
-        schedulePriceFilter();
+        scheduleFilters();
     });
 
-    // Keep price menu open while typing / resetting
+    availabilityResetBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        availabilityOptions.forEach((input) => {
+            input.checked = false;
+        });
+        scheduleFilters();
+    });
+
+    // Keep filter menus open while interacting
     form.querySelector('[data-price-filter]')?.addEventListener('click', (e) => {
         e.stopPropagation();
     });
+    form.querySelector('[data-availability-filter]')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 
-    form.querySelectorAll('input[type="radio"]').forEach((input) => {
+    form.querySelectorAll('input[name="sort"]').forEach((input) => {
         input.addEventListener('change', () => form.submit());
     });
 
@@ -151,9 +233,13 @@ function initCollectionFilters() {
 
     if (minInput) minInput.value = '';
     if (maxInput) maxInput.value = '';
+    availabilityOptions.forEach((input) => {
+        input.checked = false;
+    });
     syncFilledState(minInput);
     syncFilledState(maxInput);
-    applyPriceFilter();
+    updateAvailabilitySelected();
+    applyFilters();
 }
 
 function initProductDetail() {

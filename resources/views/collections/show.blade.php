@@ -12,26 +12,29 @@
             <div class="collection-toolbar-left">
                 <span class="collection-toolbar-label">Filter:</span>
 
-                <div class="collection-filter" data-filter-dropdown>
+                <div class="collection-filter" data-filter-dropdown data-availability-filter>
                     <button type="button" class="collection-filter-btn" data-filter-toggle aria-expanded="false">
                         Availability
                         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
                             <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <div class="collection-filter-menu" data-filter-menu hidden>
-                        <label class="collection-filter-option">
-                            <input type="radio" name="availability" value="" {{ ($filters['availability'] ?? '') === '' ? 'checked' : '' }}>
-                            <span>All</span>
-                        </label>
-                        <label class="collection-filter-option">
-                            <input type="radio" name="availability" value="in-stock" {{ ($filters['availability'] ?? '') === 'in-stock' ? 'checked' : '' }}>
-                            <span>In stock</span>
-                        </label>
-                        <label class="collection-filter-option">
-                            <input type="radio" name="availability" value="out-of-stock" {{ ($filters['availability'] ?? '') === 'out-of-stock' ? 'checked' : '' }}>
-                            <span>Out of stock</span>
-                        </label>
+                    <div class="collection-filter-menu collection-filter-menu--panel" data-filter-menu hidden>
+                        <div class="collection-filter-panel-head">
+                            <p class="collection-filter-panel-title" data-availability-selected>0 selected</p>
+                            <button type="button" class="collection-filter-panel-reset" data-availability-reset>Reset</button>
+                        </div>
+
+                        <div class="collection-filter-panel-options">
+                            <label class="collection-filter-option">
+                                <input type="checkbox" name="availability[]" value="in-stock" data-availability-option {{ in_array('in-stock', (array) ($filters['availability'] ?? []), true) ? 'checked' : '' }}>
+                                <span>In stock</span>
+                            </label>
+                            <label class="collection-filter-option">
+                                <input type="checkbox" name="availability[]" value="out-of-stock" data-availability-option {{ in_array('out-of-stock', (array) ($filters['availability'] ?? []), true) ? 'checked' : '' }}>
+                                <span>Out of stock</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -42,12 +45,12 @@
                             <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <div class="collection-filter-menu collection-filter-menu--price" data-filter-menu hidden>
-                        <div class="collection-price-head">
-                            <p class="collection-price-highest">
+                    <div class="collection-filter-menu collection-filter-menu--panel collection-filter-menu--price" data-filter-menu hidden>
+                        <div class="collection-filter-panel-head">
+                            <p class="collection-filter-panel-title">
                                 The highest price is Rs. {{ number_format($highestPrice ?? 0, 2) }}
                             </p>
-                            <button type="button" class="collection-price-reset" data-price-reset>Reset</button>
+                            <button type="button" class="collection-filter-panel-reset" data-price-reset>Reset</button>
                         </div>
 
                         <div class="collection-price-fields">
@@ -149,6 +152,7 @@
                     class="product-card"
                     data-product-card
                     data-price="{{ (float) $product->price_from }}"
+                    data-availability="{{ $product->is_active ? 'in-stock' : 'out-of-stock' }}"
                 >
                     <div class="product-card-media">
                         @if ($product->imageUrl())
@@ -163,7 +167,7 @@
             @empty
                 <p class="collection-empty" data-collection-empty>No products found in this collection.</p>
             @endforelse
-            <p class="collection-empty" data-collection-empty-filtered hidden>No products found in this price range.</p>
+            <p class="collection-empty" data-collection-empty-filtered hidden>No products found matching your filters.</p>
         </div>
     </div>
 </section>

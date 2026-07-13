@@ -46,21 +46,6 @@
                     <path d="M20 20l-3.5-3.5" stroke-linecap="round"/>
                 </svg>
             </button>
-
-            <button type="button" class="header-icon" aria-label="Account">
-                <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-                    <circle cx="12" cy="8" r="3.5"/>
-                    <path d="M5 19.5c1.8-3.2 4.2-4.8 7-4.8s5.2 1.6 7 4.8" stroke-linecap="round"/>
-                </svg>
-            </button>
-
-            <button type="button" class="header-icon relative" aria-label="Cart">
-                <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-                    <path d="M6.5 8.5h11l-1 11h-9l-1-11z" stroke-linejoin="round"/>
-                    <path d="M9 8.5V7a3 3 0 016 0v1.5" stroke-linecap="round"/>
-                </svg>
-                <span class="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-ink px-1 text-[10px] font-semibold leading-none text-white">0</span>
-            </button>
         </div>
     </div>
 

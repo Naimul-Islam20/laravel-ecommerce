@@ -1289,12 +1289,16 @@ body.product-lightbox-open {
     display: none;
 }
 
-.collection-filter-menu--price {
-    min-width: 21rem;
+.collection-filter-menu--panel {
+    min-width: 16rem;
     padding: 1.15rem 1.25rem 1.3rem;
 }
 
-.collection-price-head {
+.collection-filter-menu--price {
+    min-width: 21rem;
+}
+
+.collection-filter-panel-head {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -1302,14 +1306,14 @@ body.product-lightbox-open {
     margin-bottom: 1.1rem;
 }
 
-.collection-price-highest {
+.collection-filter-panel-title {
     margin: 0;
     font-size: 0.9375rem;
     line-height: 1.45;
     color: #111;
 }
 
-.collection-price-reset {
+.collection-filter-panel-reset {
     border: 0;
     background: transparent;
     padding: 0;
@@ -1319,6 +1323,11 @@ body.product-lightbox-open {
     text-underline-offset: 2px;
     cursor: pointer;
     white-space: nowrap;
+}
+
+.collection-filter-panel-options {
+    display: grid;
+    gap: 0.35rem;
 }
 
 .collection-price-fields {
@@ -1463,6 +1472,23 @@ body.product-lightbox-open {
     margin: 2rem 0;
     font-size: 0.9375rem;
     color: rgba(17, 17, 17, 0.55);
+}
+
+/* Home scroll reveal — DispoSoul / Shopify Dawn style */
+@media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal {
+        opacity: 0.01;
+        transform: translateY(1.25rem);
+    }
+
+    .scroll-reveal.is-revealed {
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+            opacity 0.85s cubic-bezier(0, 0, 0.2, 1),
+            transform 0.85s cubic-bezier(0, 0, 0.2, 1);
+        transition-delay: calc(var(--reveal-order, 0) * 75ms);
+    }
 }
 
 

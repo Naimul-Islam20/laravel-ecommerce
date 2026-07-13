@@ -51,10 +51,9 @@ class CategoryController extends Controller
         $categoryIds = $category->collectionCategoryIds();
 
         $query = Product::query()
-            ->active()
             ->whereIn('category_id', $categoryIds);
 
-        $this->applyFilters($query, $request, applyPrice: false);
+        $this->applyFilters($query, $request, applyPrice: false, applyAvailability: false);
         $query->orderByRaw($this->categoryGroupOrderSql($category));
         $this->applySort($query, $request);
 
@@ -77,7 +76,7 @@ class CategoryController extends Controller
 
         $query = Product::query()->{$scope}();
 
-        $this->applyFilters($query, $request, applyPrice: false);
+        $this->applyFilters($query, $request, applyPrice: false, applyAvailability: false);
         $this->applySort($query, $request);
 
         $products = $query->get();
@@ -93,13 +92,15 @@ class CategoryController extends Controller
         ]);
     }
 
-    private function applyFilters(Builder $query, Request $request, bool $applyPrice = true): void
+    private function applyFilters(Builder $query, Request $request, bool $applyPrice = true, bool $applyAvailability = true): void
     {
-        $availability = $request->string('availability')->toString();
-        if ($availability === 'in-stock') {
-            $query->where('is_active', true);
-        } elseif ($availability === 'out-of-stock') {
-            $query->where('is_active', false);
+        if ($applyAvailability) {
+            $availability = $request->string('availability')->toString();
+            if ($availability === 'in-stock') {
+                $query->where('is_active', true);
+            } elseif ($availability === 'out-of-stock') {
+                $query->where('is_active', false);
+            }
         }
 
         if (! $applyPrice) {
@@ -141,8 +142,14 @@ class CategoryController extends Controller
             $minPrice = '';
         }
 
+        $availability = $request->input('availability', []);
+        if (! is_array($availability)) {
+            $availability = $availability === '' || $availability === null ? [] : [$availability];
+        }
+        $availability = array_values(array_intersect($availability, ['in-stock', 'out-of-stock']));
+
         return [
-            'availability' => $request->string('availability')->toString(),
+            'availability' => $availability,
             'min_price' => $minPrice,
             'max_price' => $maxPrice,
             'sort' => $request->string('sort')->toString() ?: 'featured',
