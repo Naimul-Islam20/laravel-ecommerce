@@ -15,7 +15,7 @@
 
     <div class="hero-cta">
         <div class="container">
-            <a href="#shop" class="hero-shop-btn">
+            <a href="{{ route('shop') }}" class="hero-shop-btn">
                 Shop Now
             </a>
         </div>

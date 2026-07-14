@@ -1491,6 +1491,204 @@ body.product-lightbox-open {
     }
 }
 
+/* Contact page */
+.contact-page {
+    padding: 2.75rem 0 4.5rem;
+}
+
+.contact-page .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contact-page-title {
+    margin: 0 0 2rem;
+    width: 100%;
+    max-width: 52rem;
+    text-align: left;
+    font-family: var(--font-display, inherit);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #111;
+}
+
+.contact-success {
+    margin: 0 0 1.5rem;
+    width: 100%;
+    max-width: 52rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(17, 17, 17, 0.12);
+    background: #f7f7f7;
+    font-size: 0.9375rem;
+    text-align: center;
+    color: #111;
+}
+
+.contact-form {
+    display: grid;
+    gap: 1.15rem;
+    width: 100%;
+    max-width: 52rem;
+}
+
+.contact-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+}
+
+@media (min-width: 768px) {
+    .contact-form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.contact-field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.contact-field-wrap {
+    position: relative;
+    display: block;
+    border: 1px solid rgba(17, 17, 17, 0.45);
+    background: #fff;
+    padding: 0.95rem 0.85rem 0.65rem;
+}
+
+.contact-field-wrap--textarea {
+    padding-top: 1.1rem;
+}
+
+.contact-field-label {
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 0.2rem;
+    font-size: 0.9375rem;
+    line-height: 1;
+    color: rgba(17, 17, 17, 0.55);
+    background: #fff;
+    pointer-events: none;
+    transition: top 0.15s ease, transform 0.15s ease, font-size 0.15s ease, color 0.15s ease;
+}
+
+.contact-field-wrap--textarea .contact-field-label {
+    top: 1.15rem;
+    transform: none;
+}
+
+.contact-field-wrap:focus-within .contact-field-label,
+.contact-field-wrap.is-filled .contact-field-label {
+    top: 0;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #111;
+}
+
+.contact-field-wrap input,
+.contact-field-wrap textarea {
+    width: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: #111;
+    outline: none;
+    background: transparent;
+    resize: vertical;
+}
+
+.contact-field-wrap textarea {
+    min-height: 8.5rem;
+}
+
+.contact-field-error {
+    font-size: 0.8125rem;
+    color: #b42318;
+}
+
+.contact-submit {
+    justify-self: start;
+    margin-top: 0.35rem;
+    border: 0;
+    background: #111;
+    color: #fff;
+    padding: 0.85rem 1.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.contact-submit:hover {
+    background: #2a2a2a;
+}
+
+/* Shop pagination */
+.shop-pagination {
+    margin-top: 2.5rem;
+    padding-bottom: 1rem;
+}
+
+.shop-pagination-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.shop-pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.55rem;
+    border: 1px solid rgba(17, 17, 17, 0.15);
+    background: #fff;
+    color: #111;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.shop-pagination-link svg {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+.shop-pagination-item:not(.is-disabled):not(.is-active) .shop-pagination-link:hover {
+    border-color: #111;
+    background: #f7f7f7;
+}
+
+.shop-pagination-item.is-active .shop-pagination-link {
+    border-color: #111;
+    background: #111;
+    color: #fff;
+}
+
+.shop-pagination-item.is-disabled .shop-pagination-link {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.shop-pagination-item.is-ellipsis .shop-pagination-link {
+    border-color: transparent;
+}
+
 
 
 

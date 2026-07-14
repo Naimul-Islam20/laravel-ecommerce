@@ -6,7 +6,7 @@
                 <ul class="footer-links">
                     <li><a href="#" data-search-open>Search</a></li>
                     <li><a href="#">Shipping and Delivery</a></li>
-                    <li><a href="{{ route('home') }}#contact">Contact Us</a></li>
+                    <li><a href="{{ route('contact.show') }}">Contact Us</a></li>
                     <li><a href="#">Terms of service</a></li>
                     <li><a href="#">Return &amp; Refund policy</a></li>
                     <li><a href="#">Privacy policy</a></li>

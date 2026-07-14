@@ -16,17 +16,32 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductDetail();
     initCollectionFilters();
     initScrollReveal();
+    initContactForm();
 });
+
+function initContactForm() {
+    const form = document.querySelector('[data-contact-form]');
+    if (!form) return;
+
+    const syncFilled = (field) => {
+        const wrap = field.closest('.contact-field-wrap');
+        if (!wrap) return;
+        wrap.classList.toggle('is-filled', (field.value || '').trim() !== '');
+    };
+
+    form.querySelectorAll('input, textarea').forEach((field) => {
+        syncFilled(field);
+        field.addEventListener('input', () => syncFilled(field));
+        field.addEventListener('blur', () => syncFilled(field));
+    });
+}
 
 function initScrollReveal() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const sections = document.querySelectorAll('.collections-section, .best-sellers-section');
-    if (!sections.length) return;
+    const sectionItems = [];
 
-    const items = [];
-
-    sections.forEach((section) => {
+    document.querySelectorAll('.collections-section, .best-sellers-section').forEach((section) => {
         const targets = section.querySelectorAll(
             '.collections-heading, .best-sellers-heading, .collection-card, .product-card, .view-all-wrap'
         );
@@ -34,11 +49,16 @@ function initScrollReveal() {
         targets.forEach((el, index) => {
             el.classList.add('scroll-reveal');
             el.style.setProperty('--reveal-order', String(Math.min(index, 8)));
-            items.push(el);
+            sectionItems.push(el);
         });
     });
 
-    if (!items.length) return;
+    document.querySelectorAll('.contact-page .scroll-reveal').forEach((el, index) => {
+        el.style.setProperty('--reveal-order', String(Math.min(index, 4)));
+        sectionItems.push(el);
+    });
+
+    if (!sectionItems.length) return;
 
     const observer = new IntersectionObserver(
         (entries) => {
@@ -54,7 +74,7 @@ function initScrollReveal() {
         }
     );
 
-    items.forEach((el) => observer.observe(el));
+    sectionItems.forEach((el) => observer.observe(el));
 }
 
 function initCollectionFilters() {

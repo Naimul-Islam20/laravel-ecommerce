@@ -13,9 +13,9 @@
                 </button>
             </div>
 
-            <a href="{{ route('home') }}#shop" class="nav-link">Shop</a>
+            <a href="{{ route('shop') }}" class="nav-link {{ request()->routeIs('shop') ? 'is-active' : '' }}">Shop</a>
             <a href="{{ route('home') }}#bulk" class="nav-link">Bulk Orders</a>
-            <a href="{{ route('home') }}#contact" class="nav-link">Contact Us</a>
+            <a href="{{ route('contact.show') }}" class="nav-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact Us</a>
         </nav>
 
         {{-- Mobile menu button --}}
@@ -123,9 +123,9 @@
                 @endforeach
             </div>
 
-            <a href="{{ route('home') }}#shop" class="mt-2 border-t border-black/5 py-2 text-sm font-medium">Shop</a>
+            <a href="{{ route('shop') }}" class="mt-2 border-t border-black/5 py-2 text-sm font-medium">Shop</a>
             <a href="{{ route('home') }}#bulk" class="py-2 text-sm font-medium">Bulk Orders</a>
-            <a href="{{ route('home') }}#contact" class="py-2 text-sm font-medium">Contact Us</a>
+            <a href="{{ route('contact.show') }}" class="py-2 text-sm font-medium {{ request()->routeIs('contact.*') ? 'text-brand-ink' : '' }}">Contact Us</a>
         </nav>
     </div>
 </header>
