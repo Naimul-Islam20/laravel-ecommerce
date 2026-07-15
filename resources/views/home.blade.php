@@ -6,10 +6,10 @@
 <section class="hero" aria-label="Featured" data-hero-slider>
     <div class="hero-bg">
         <div class="hero-slide is-active" data-slide>
-            <img src="{{ asset('images/hero-1.webp') }}" alt="xperciainc eco-friendly packaging" width="1920" height="768">
+            <img src="{{ asset('images/hero-7.png') }}" alt="xperciainc eco-friendly packaging" width="1983" height="793">
         </div>
         <div class="hero-slide" data-slide>
-            <img src="{{ asset('images/hero-2.webp') }}" alt="xperciainc product collection" width="1920" height="768">
+            <img src="{{ asset('images/hero-7.png') }}" alt="xperciainc product collection" width="1983" height="793">
         </div>
     </div>
 

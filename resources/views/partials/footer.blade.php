@@ -20,18 +20,18 @@
                     <img src="{{ asset('images/logo-mark.svg') }}" alt="" class="footer-logo-mark" width="48" height="48">
                     <span class="footer-logo-text">XPERCIAINC</span>
                 </a>
-                <h3 class="footer-heading">DispoSoul</h3>
+                <h3 class="footer-heading">XPERCIAINC</h3>
                 <p class="footer-about">
                     R.P. Trading Company " are Wholesaler of Disposable Plate, Plastic Box, Disposable Bowl, Disposable Tray, Pasta Tray, and much more.
                 </p>
             </div>
 
             <div class="footer-col">
-                <h3 class="footer-heading">DispoSoul</h3>
+                <h3 class="footer-heading">XPERCIAINC</h3>
                 <ul class="footer-contact">
                     <li>By Rp Trading Company</li>
                     <li>Mobile - 9211997415</li>
-                    <li>Email - Info@Disposoul.com</li>
+                    <li>Email - Info@Xperciainc.com</li>
                     <li>
                         Add-
                         <a href="https://maps.google.com/?q=Basement,+Vidhata+Complex,+Vasundhara+Enclave,+Delhi,+India+110096" target="_blank" rel="noopener noreferrer" class="footer-address">

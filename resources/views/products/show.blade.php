@@ -86,27 +86,6 @@
                     @endforeach
                 </div>
 
-                <div class="product-qty-wrap">
-                    <label class="sr-only" for="product-qty">Quantity</label>
-                    <div class="product-qty">
-                        <button type="button" class="product-qty-btn" data-qty-minus aria-label="Decrease quantity">−</button>
-                        <input
-                            id="product-qty"
-                            type="number"
-                            min="1"
-                            value="1"
-                            class="product-qty-input"
-                            data-qty-input
-                        >
-                        <button type="button" class="product-qty-btn" data-qty-plus aria-label="Increase quantity">+</button>
-                    </div>
-                </div>
-
-                <div class="product-actions">
-                    <button type="button" class="product-btn product-btn-outline">Add to cart</button>
-                    <button type="button" class="product-btn product-btn-solid">Buy it now</button>
-                </div>
-
                 <p class="product-short-desc">{{ $product->defaultShortDescription() }}</p>
 
                 <div class="product-long-desc">
