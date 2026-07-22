@@ -510,22 +510,36 @@
         .best-sellers-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
+
+        .best-sellers-grid--4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .best-sellers-grid--5 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .best-sellers-grid--6 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
     }
 
     @media (min-width: 1024px) {
         .best-sellers-grid {
-            grid-template-columns: repeat(6, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 1.1rem 0.5rem;
         }
 
         .best-sellers-grid--4 {
             grid-template-columns: repeat(4, minmax(0, 1fr));
         }
-    }
 
-    @media (min-width: 640px) and (max-width: 1023px) {
-        .best-sellers-grid--4 {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+        .best-sellers-grid--5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .best-sellers-grid--6 {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
         }
     }
 

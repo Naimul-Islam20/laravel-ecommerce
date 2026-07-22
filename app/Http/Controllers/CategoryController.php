@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\HomeSection;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -10,36 +11,16 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    /**
-     * Home section listings that are flag-based (not a real category tree).
-     */
-    private const SECTION_LISTINGS = [
-        'best-sellers' => [
-            'name' => 'Best Seller',
-            'scope' => 'bestSellers',
-        ],
-        'top-selling' => [
-            'name' => 'Top Selling Product',
-            'scope' => 'topSelling',
-        ],
-        'trending' => [
-            'name' => 'Trending Product',
-            'scope' => 'trending',
-        ],
-        'biodegradable-products' => [
-            'name' => 'Biodegradable Products',
-            'scope' => 'biodegradableProducts',
-        ],
-        'new-arrivals' => [
-            'name' => 'New Arrivals',
-            'scope' => 'newArrivals',
-        ],
-    ];
-
     public function show(Request $request, string $slug): View
     {
-        if (isset(self::SECTION_LISTINGS[$slug])) {
-            return $this->showSectionListing($request, $slug, self::SECTION_LISTINGS[$slug]);
+        $homeSection = HomeSection::query()
+            ->active()
+            ->where('slug', $slug)
+            ->where('type', HomeSection::TYPE_FLAG)
+            ->first();
+
+        if ($homeSection) {
+            return $this->showHomeSectionListing($request, $homeSection);
         }
 
         $category = Category::query()
@@ -70,21 +51,24 @@ class CategoryController extends Controller
         ]);
     }
 
-    private function showSectionListing(Request $request, string $slug, array $section): View
+    private function showHomeSectionListing(Request $request, HomeSection $section): View
     {
-        $scope = $section['scope'];
-
-        $query = Product::query()->{$scope}();
+        $query = $section->flaggedProducts()->active();
 
         $this->applyFilters($query, $request, applyPrice: false, applyAvailability: false);
-        $this->applySort($query, $request);
+
+        if ($request->string('sort')->toString() === '') {
+            $query->latest();
+        } else {
+            $this->applySort($query, $request);
+        }
 
         $products = $query->get();
         $highestPrice = (float) ($products->max('price_from') ?? 0);
 
         return view('collections.show', [
-            'title' => $section['name'],
-            'collectionSlug' => $slug,
+            'title' => $section->title,
+            'collectionSlug' => $section->slug,
             'products' => $products,
             'productCount' => $products->count(),
             'highestPrice' => $highestPrice,
