@@ -7,8 +7,11 @@
 @php
     $gallery = $product->galleryUrls();
     $packs = $product->packOptions();
-    $firstPack = $packs[0] ?? ['pcs' => 25, 'unit_price' => (float) $product->price_from / 25];
-    $initialTotal = round($firstPack['pcs'] * $firstPack['unit_price'], 2);
+    $hasMultiplePricing = $product->isMultiplePricing() && count($packs) > 0;
+    $firstPack = $packs[0] ?? null;
+    $initialPrice = $hasMultiplePricing
+        ? (float) ($firstPack['price'] ?? $product->price_from)
+        : (float) $product->price_from;
 @endphp
 
 <section class="product-detail" data-product-detail>
@@ -64,27 +67,22 @@
             <div class="product-info">
                 <p class="product-brand">{{ $product->brand ?: 'XPERCIAINC' }}</p>
                 <h1 class="product-title">{{ $product->name }}</h1>
-                <p class="product-price" data-product-price>{{ $product->formattedPrice($initialTotal) }}</p>
+                <p class="product-price" data-product-price>{{ $product->formattedPrice($initialPrice) }}</p>
 
-                <div class="product-packs" role="group" aria-label="Pack quantity">
-                    @foreach ($packs as $index => $pack)
-                        @php
-                            $label = $pack['pcs'].' Pcs ('.$pack['unit_price'].'/Pcs)';
-                            $total = round($pack['pcs'] * $pack['unit_price'], 2);
-                        @endphp
-                        <button
-                            type="button"
-                            class="product-pack-btn {{ $index === 0 ? 'is-active' : '' }}"
-                            data-product-pack
-                            data-pcs="{{ $pack['pcs'] }}"
-                            data-unit="{{ $pack['unit_price'] }}"
-                            data-total="{{ $total }}"
-                            data-price-label="{{ $product->formattedPrice($total) }}"
-                        >
-                            {{ $label }}
-                        </button>
-                    @endforeach
-                </div>
+                @if ($hasMultiplePricing)
+                    <div class="product-packs" role="group" aria-label="Pack quantity">
+                        @foreach ($packs as $index => $pack)
+                            <button
+                                type="button"
+                                class="product-pack-btn {{ $index === 0 ? 'is-active' : '' }}"
+                                data-product-pack
+                                data-price-label="{{ $product->formattedPrice((float) $pack['price']) }}"
+                            >
+                                {{ $pack['label'] }}
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
 
                 <p class="product-short-desc">{{ $product->defaultShortDescription() }}</p>
 

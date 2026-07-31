@@ -1248,6 +1248,8 @@ body.product-lightbox-open {
 }
 
 .collection-toolbar {
+    position: relative;
+    z-index: 5;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -1255,6 +1257,7 @@ body.product-lightbox-open {
     gap: 1rem 1.5rem;
     margin-top: 1.75rem;
     padding-bottom: 1.25rem;
+    background: #fff;
 }
 
 .collection-toolbar-left,
@@ -1463,6 +1466,8 @@ body.product-lightbox-open {
 }
 
 .collection-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 0.45rem;

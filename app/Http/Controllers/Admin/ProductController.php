@@ -42,7 +42,11 @@ class ProductController extends Controller
     {
         return view('admin.products.create', [
             'categories' => Category::orderBy('name')->get(),
-            'product' => new Product(['currency' => 'USD', 'is_active' => true]),
+            'product' => new Product([
+                'currency' => 'USD',
+                'is_active' => true,
+                'pricing_mode' => Product::PRICING_MODE_SINGLE,
+            ]),
             'flagSections' => HomeSection::flagType()->ordered()->get(),
             'selectedHomeSectionIds' => [],
         ]);

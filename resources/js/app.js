@@ -71,13 +71,9 @@ function initScrollReveal() {
             addItem(section.querySelector(".view-all-wrap"), 0);
         });
 
-    // Collection / shop pages
+    // Collection / shop pages — skip toolbar/cards (transform breaks filter layering)
     document.querySelectorAll(".collection-page").forEach((page) => {
         addItem(page.querySelector(".collection-page-title"), 0);
-        addItem(page.querySelector(".collection-toolbar"), 1);
-        page.querySelectorAll(".product-card").forEach((el, index) => {
-            addItem(el, Math.min((index % 6) + 1, 6));
-        });
         addItem(page.querySelector(".shop-pagination"), 0);
         addItem(page.querySelector("[data-collection-empty]"), 0);
     });

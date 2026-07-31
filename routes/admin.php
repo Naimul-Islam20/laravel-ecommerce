@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\HomeHeroSlideController;
 use App\Http\Controllers\Admin\HomePageController;
 use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SiteInfoController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,5 +32,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('home-page/settings', [HomePageController::class, 'updateSettings'])->name('home-page.settings.update');
         Route::resource('home-hero-slides', HomeHeroSlideController::class)->except(['show', 'index']);
         Route::resource('home-sections', HomeSectionController::class)->except(['show', 'index']);
+
+        Route::get('site-info', [SiteInfoController::class, 'index'])->name('site-info.index');
+        Route::put('site-info', [SiteInfoController::class, 'update'])->name('site-info.update');
     });
 });

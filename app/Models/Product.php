@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
+    public const PRICING_MODE_SINGLE = 'single';
+    public const PRICING_MODE_MULTIPLE = 'multiple';
+
     protected $fillable = [
         'category_id',
         'name',
@@ -17,6 +20,7 @@ class Product extends Model
         'short_description',
         'description',
         'gallery',
+        'pricing_mode',
         'pack_options',
         'price_from',
         'currency',
@@ -214,18 +218,64 @@ class Product extends Model
 
     public function packOptions(): array
     {
-        if (! empty($this->pack_options)) {
-            return $this->pack_options;
+        if ($this->isSinglePricing()) {
+            return [];
+        }
+
+        $normalized = collect($this->pack_options ?? [])
+            ->map(function ($option) {
+                if (! is_array($option)) {
+                    return null;
+                }
+
+                $label = trim((string) ($option['label'] ?? ''));
+                $price = $option['price'] ?? null;
+
+                if ($label !== '' && is_numeric($price)) {
+                    return [
+                        'label' => $label,
+                        'price' => round((float) $price, 2),
+                    ];
+                }
+
+                $pcs = $option['pcs'] ?? null;
+                $unitPrice = $option['unit_price'] ?? null;
+
+                if (is_numeric($pcs) && is_numeric($unitPrice)) {
+                    return [
+                        'label' => (int) $pcs.' Pcs',
+                        'price' => round((float) $pcs * (float) $unitPrice, 2),
+                    ];
+                }
+
+                return null;
+            })
+            ->filter()
+            ->values()
+            ->all();
+
+        if ($normalized !== []) {
+            return $normalized;
         }
 
         $base = max(1, (float) $this->price_from / 25);
 
         return [
-            ['pcs' => 25, 'unit_price' => round($base, 2)],
-            ['pcs' => 100, 'unit_price' => round($base * 0.94, 2)],
-            ['pcs' => 300, 'unit_price' => round($base * 0.89, 2)],
-            ['pcs' => 500, 'unit_price' => round($base * 0.87, 2)],
+            ['label' => '25 Pcs', 'price' => round($base * 25, 2)],
+            ['label' => '100 Pcs', 'price' => round($base * 100 * 0.94, 2)],
+            ['label' => '300 Pcs', 'price' => round($base * 300 * 0.89, 2)],
+            ['label' => '500 Pcs', 'price' => round($base * 500 * 0.87, 2)],
         ];
+    }
+
+    public function isSinglePricing(): bool
+    {
+        return ($this->pricing_mode ?: self::PRICING_MODE_MULTIPLE) === self::PRICING_MODE_SINGLE;
+    }
+
+    public function isMultiplePricing(): bool
+    {
+        return ! $this->isSinglePricing();
     }
 
     public function formattedPrice(float $amount): string
@@ -235,6 +285,10 @@ class Product extends Model
 
     public function formattedPriceFrom(): string
     {
+        if ($this->isSinglePricing()) {
+            return $this->formattedPrice((float) $this->price_from);
+        }
+
         return 'From '.$this->currency.' '.number_format((float) $this->price_from, 2);
     }
 

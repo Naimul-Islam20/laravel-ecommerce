@@ -26,20 +26,18 @@
         </button>
 
         {{-- Center logo --}}
+        @php
+            $headerSite = $siteSettings ?? null;
+            $headerSiteName = $headerSite?->site_name ?: 'XPERCIAINC';
+            $headerLogo = $headerSite?->logoUrl() ?? asset('images/logo-mark.svg');
+        @endphp
         <a href="{{ route('home') }}" class="absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5">
-            <img src="{{ asset('images/logo-mark.svg') }}" alt="" class="h-7 w-7" width="28" height="28">
-            <span class="font-display text-[15px] font-bold tracking-[0.18em] text-brand-ink">XPERCIAINC</span>
+            <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}" class="h-7 w-7 object-contain" width="28" height="28">
+            <span class="font-display text-[15px] font-bold tracking-[0.18em] text-brand-ink">{{ $headerSiteName }}</span>
         </a>
 
         {{-- Right utilities --}}
         <div class="flex items-center gap-3 sm:gap-4">
-            <button type="button" class="hidden items-center gap-1 text-[13px] text-brand-ink/80 transition hover:text-brand-ink md:inline-flex">
-                <span>Åland Islands | INR ₹</span>
-                <svg class="h-3 w-3 opacity-70" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                    <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-
             <button type="button" class="header-icon" aria-label="Search" data-search-open>
                 <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
                     <circle cx="11" cy="11" r="7"/>

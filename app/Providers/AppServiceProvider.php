@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\SiteSetting;
 use App\Models\User;
 use App\Policies\AdminUserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\ServiceProvider;
@@ -33,10 +35,17 @@ class AppServiceProvider extends ServiceProvider
             return User::admins()->findOrFail($value);
         });
 
-        View::composer(['partials.header', 'partials.footer'], function ($view) {
-            $menuCategories = Category::forMenu()->get()->groupBy('menu_column');
+        View::composer(['layouts.app', 'partials.header', 'partials.footer'], function ($view) {
+            if (in_array($view->name(), ['partials.header', 'partials.footer'], true)) {
+                $menuCategories = Category::forMenu()->get()->groupBy('menu_column');
+                $view->with('menuColumns', $menuCategories);
+            }
 
-            $view->with('menuColumns', $menuCategories);
+            if (Schema::hasTable('site_settings')) {
+                $view->with('siteSettings', SiteSetting::current());
+            } else {
+                $view->with('siteSettings', null);
+            }
         });
     }
 }

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             HomeCollectionSeeder::class,
             ProductSeeder::class,
             HomePageSeeder::class,
+            SiteSettingSeeder::class,
         ]);
     }
 }
