@@ -5,8 +5,13 @@
 @section('subheading', 'Top-level categories for menu and catalog')
 
 @section('content')
-    <div class="mb-4 flex justify-end">
-        <a href="{{ route('admin.categories.create') }}" class="inline-flex rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">
+    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <form method="GET" action="{{ route('admin.categories.index') }}" class="flex gap-2">
+            <input type="search" name="search" value="{{ $search }}" placeholder="Search categories..."
+                   class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm sm:w-72">
+            <button type="submit" class="rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">Search</button>
+        </form>
+        <a href="{{ route('admin.categories.create') }}" class="inline-flex justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">
             Add Category
         </a>
     </div>
@@ -28,7 +33,6 @@
                         <tr class="border-t border-brand-ink/5">
                             <td class="px-5 py-3">
                                 <div class="font-medium">{{ $category->name }}</div>
-                                <div class="text-xs text-brand-ink/50">{{ $category->slug }}</div>
                             </td>
                             <td class="px-5 py-3">{{ $category->children_count }}</td>
                             <td class="px-5 py-3">{{ $category->products_count }}</td>

@@ -1,11 +1,22 @@
+@php
+    $firstSlide = $heroSlides->first();
+    $fallbackLabel = $homeSettings->hero_cta_text ?: 'Shop Now';
+    $fallbackHref = $homeSettings->heroCtaHref();
+@endphp
 <section class="hero" aria-label="Featured" data-hero-slider>
     <div class="hero-bg">
         @forelse ($heroSlides as $index => $slide)
-            <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}" data-slide>
+            <div class="hero-slide {{ $index === 0 ? 'is-active' : '' }}"
+                 data-slide
+                 data-button-text="{{ $slide->buttonLabel() }}"
+                 data-button-link="{{ $slide->buttonHref() }}">
                 <img src="{{ $slide->imageUrl() }}" alt="{{ $slide->alt_text ?: 'xperciainc hero slide' }}" width="1983" height="793">
             </div>
         @empty
-            <div class="hero-slide is-active" data-slide>
+            <div class="hero-slide is-active"
+                 data-slide
+                 data-button-text="{{ $fallbackLabel }}"
+                 data-button-link="{{ $fallbackHref }}">
                 <img src="{{ asset('images/hero-7.png') }}" alt="xperciainc eco-friendly packaging" width="1983" height="793">
             </div>
         @endforelse
@@ -13,8 +24,10 @@
 
     <div class="hero-cta">
         <div class="container">
-            <a href="{{ $homeSettings->heroCtaHref() }}" class="hero-shop-btn">
-                {{ $homeSettings->hero_cta_text }}
+            <a href="{{ $firstSlide?->buttonHref() ?? $fallbackHref }}"
+               class="hero-shop-btn"
+               data-hero-cta>
+                {{ $firstSlide?->buttonLabel() ?? $fallbackLabel }}
             </a>
         </div>
     </div>

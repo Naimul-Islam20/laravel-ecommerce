@@ -16,6 +16,8 @@ class StoreHomeHeroSlideRequest extends FormRequest
         return [
             'image' => [$this->isMethod('post') ? 'required' : 'nullable', 'image', 'max:5120'],
             'alt_text' => ['nullable', 'string', 'max:255'],
+            'button_text' => ['required', 'string', 'max:100'],
+            'button_link' => ['required', 'string', 'max:500'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
         ];

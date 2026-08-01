@@ -670,6 +670,15 @@ function initHeroSlider() {
         dots.forEach((dot, i) => {
             dot.classList.toggle("is-active", i === index);
         });
+
+        const active = slides[index];
+        const cta = root.querySelector("[data-hero-cta]");
+        if (cta && active) {
+            const text = active.dataset.buttonText;
+            const link = active.dataset.buttonLink;
+            if (text) cta.textContent = text;
+            if (link) cta.setAttribute("href", link);
+        }
     };
 
     const stop = () => {

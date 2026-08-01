@@ -16,16 +16,6 @@
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
             ],
             [
-                'route' => 'admin.home-page.index',
-                'label' => 'Home Page',
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm10 0a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/>',
-            ],
-            [
-                'route' => 'admin.site-info.index',
-                'label' => 'Site Info',
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>',
-            ],
-            [
                 'route' => 'admin.contacts.index',
                 'label' => 'Contact',
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
@@ -46,6 +36,16 @@
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h10M4 14h16M4 18h10"/>',
             ],
             [
+                'route' => 'admin.home-page.index',
+                'label' => 'Home Page',
+                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm10 0a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/>',
+            ],
+            [
+                'route' => 'admin.site-info.index',
+                'label' => 'Site Info',
+                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>',
+            ],
+            [
                 'route' => 'admin.admins.index',
                 'label' => 'Admins',
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
@@ -55,9 +55,11 @@
 
     <div class="flex min-h-screen">
         <aside class="hidden w-64 shrink-0 border-r border-brand-ink/10 bg-white lg:block">
-            <div class="border-b border-brand-ink/10 px-6 py-5">
-                <a href="{{ route('admin.dashboard') }}" class="font-display text-lg font-semibold tracking-tight">
-                    xperciainc Admin
+            <div class="flex h-20 items-center justify-center border-b border-brand-ink/10 px-4">
+                <a href="{{ route('admin.dashboard') }}" class="flex h-full w-full items-center justify-center py-1">
+                    <img src="{{ ($siteSettings ?? null)?->logoUrl() ?? asset('images/logo-mark.svg') }}"
+                         alt="{{ ($siteSettings ?? null)?->site_name ?: 'Admin' }}"
+                         class="h-full w-auto max-w-full object-contain">
                 </a>
             </div>
             <nav class="space-y-1 p-4">
@@ -77,8 +79,8 @@
         </aside>
 
         <div class="flex min-w-0 flex-1 flex-col">
-            <header class="border-b border-brand-ink/10 bg-white px-4 py-4 sm:px-6">
-                <div class="flex items-center justify-between gap-4">
+            <header class="border-b border-brand-ink/10 bg-white px-4 py-4 sm:px-6 lg:h-20 lg:py-0">
+                <div class="flex items-center justify-between gap-4 lg:h-full">
                     <div>
                         <h1 class="font-display text-xl font-semibold">@yield('heading', 'Dashboard')</h1>
                         @hasSection('subheading')

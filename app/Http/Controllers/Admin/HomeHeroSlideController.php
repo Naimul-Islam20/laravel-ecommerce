@@ -17,7 +17,12 @@ class HomeHeroSlideController extends Controller
     public function create(): View
     {
         return view('admin.home-page.hero-slides.create', [
-            'slide' => new HomeHeroSlide(['is_active' => true, 'sort_order' => 0]),
+            'slide' => new HomeHeroSlide([
+                'is_active' => true,
+                'sort_order' => 0,
+                'button_text' => 'Shop Now',
+                'button_link' => '/shop',
+            ]),
         ]);
     }
 

@@ -10,11 +10,28 @@
     <div>
         <label for="alt_text" class="mb-1 block text-sm font-medium">Alt Text</label>
         <input id="alt_text" name="alt_text" type="text" value="{{ old('alt_text', $slide->alt_text) }}"
-               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
+               placeholder="Hero slide description">
         @error('alt_text')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
     <div>
-        <label for="sort_order" class="mb-1 block text-sm font-medium">Sort Order</label>
+        <label for="button_text" class="mb-1 block text-sm font-medium">Button Text *</label>
+        <input id="button_text" name="button_text" type="text"
+               value="{{ old('button_text', $slide->button_text ?: 'Shop Now') }}" required
+               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
+               placeholder="Shop Now">
+        @error('button_text')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label for="button_link" class="mb-1 block text-sm font-medium">Button Link *</label>
+        <input id="button_link" name="button_link" type="text"
+               value="{{ old('button_link', $slide->button_link ?: '/shop') }}" required
+               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
+               placeholder="/shop or https://...">
+        @error('button_link')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label for="sort_order" class="mb-1 block text-sm font-medium">Order</label>
         <input id="sort_order" name="sort_order" type="number" min="0" value="{{ old('sort_order', $slide->sort_order ?? 0) }}"
                class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
         @error('sort_order')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror

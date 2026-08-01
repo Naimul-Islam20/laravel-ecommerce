@@ -7,37 +7,10 @@
 @section('content')
     <div class="space-y-6">
         <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
-            <h2 class="font-display text-lg font-semibold">Hero Settings</h2>
-            <p class="mt-1 text-sm text-brand-ink/60">Control the main hero call-to-action button.</p>
-
-            <form method="POST" action="{{ route('admin.home-page.settings.update') }}" class="mt-4 grid gap-4 md:grid-cols-2">
-                @csrf
-                @method('PUT')
-                <div>
-                    <label for="hero_cta_text" class="mb-1 block text-sm font-medium">Button Text</label>
-                    <input id="hero_cta_text" name="hero_cta_text" type="text"
-                           value="{{ old('hero_cta_text', $settings->hero_cta_text) }}" required
-                           class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
-                    @error('hero_cta_text')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label for="hero_cta_url" class="mb-1 block text-sm font-medium">Button URL</label>
-                    <input id="hero_cta_url" name="hero_cta_url" type="text"
-                           value="{{ old('hero_cta_url', $settings->hero_cta_url) }}" required
-                           class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm" placeholder="/shop">
-                    @error('hero_cta_url')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Save Hero Settings</button>
-                </div>
-            </form>
-        </section>
-
-        <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
             <div class="mb-4 flex items-center justify-between gap-3">
                 <div>
                     <h2 class="font-display text-lg font-semibold">Hero Slides</h2>
-                    <p class="mt-1 text-sm text-brand-ink/60">Images shown in the homepage hero slider.</p>
+                    <p class="mt-1 text-sm text-brand-ink/60">Each slide has its own image, button text, and button link.</p>
                 </div>
                 <a href="{{ route('admin.home-hero-slides.create') }}" class="rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Slide</a>
             </div>
@@ -48,7 +21,8 @@
                         <tr>
                             <th class="px-4 py-3 font-medium">Order</th>
                             <th class="px-4 py-3 font-medium">Image</th>
-                            <th class="px-4 py-3 font-medium">Alt Text</th>
+                            <th class="px-4 py-3 font-medium">Button</th>
+                            <th class="px-4 py-3 font-medium">Link</th>
                             <th class="px-4 py-3 font-medium">Status</th>
                             <th class="px-4 py-3 font-medium text-right">Actions</th>
                         </tr>
@@ -60,7 +34,8 @@
                                 <td class="px-4 py-3">
                                     <img src="{{ $slide->imageUrl() }}" alt="" class="h-12 w-24 rounded object-cover">
                                 </td>
-                                <td class="px-4 py-3">{{ $slide->alt_text ?: '—' }}</td>
+                                <td class="px-4 py-3">{{ $slide->buttonLabel() }}</td>
+                                <td class="px-4 py-3">{{ $slide->button_link ?: '/shop' }}</td>
                                 <td class="px-4 py-3">
                                     <span class="rounded-full px-2 py-0.5 text-xs {{ $slide->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ $slide->is_active ? 'Active' : 'Inactive' }}
@@ -76,7 +51,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="px-4 py-8 text-center text-brand-ink/60">No hero slides yet.</td></tr>
+                            <tr><td colspan="6" class="px-4 py-8 text-center text-brand-ink/60">No hero slides yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

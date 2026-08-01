@@ -27,11 +27,10 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->only('email', 'password');
-        $remember = $this->boolean('remember');
 
         if (! auth()->attempt(
             array_merge($credentials, ['is_admin' => true, 'is_active' => true]),
-            $remember
+            false
         )) {
             RateLimiter::hit($this->throttleKey(), 900);
 
