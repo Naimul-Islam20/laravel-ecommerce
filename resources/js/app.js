@@ -1,18 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.getElementById("mobile-menu-toggle");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener("click", () => {
-            const open = mobileMenu.classList.toggle("hidden") === false;
-            menuToggle.setAttribute("aria-expanded", String(open));
-            menuToggle.setAttribute(
-                "aria-label",
-                open ? "Close menu" : "Open menu",
-            );
-        });
-    }
-
+    initMobileSidebar();
     initCollectionMega();
     initSearchOverlay();
     initHeroSlider();
@@ -23,6 +10,71 @@ document.addEventListener("DOMContentLoaded", () => {
     initAdminToasts();
     initSingleImageUploads();
 });
+
+function initMobileSidebar() {
+    const root = document.querySelector("[data-mobile-sidebar]");
+    const toggle = document.getElementById("mobile-menu-toggle");
+    if (!root || !toggle) return;
+
+    const closeButtons = root.querySelectorAll("[data-mobile-sidebar-close]");
+    const accordion = root.querySelector("[data-mobile-accordion]");
+    const accordionToggle = root.querySelector("[data-mobile-accordion-toggle]");
+    const accordionPanel = root.querySelector(".mobile-sidebar-accordion-panel");
+    let closeTimer = null;
+
+    const setOpen = (open) => {
+        window.clearTimeout(closeTimer);
+
+        if (open) {
+            root.hidden = false;
+            // Force the closed position to render before starting the transition.
+            root.getBoundingClientRect();
+            window.requestAnimationFrame(() => root.classList.add("is-open"));
+        } else {
+            root.classList.remove("is-open");
+            closeTimer = window.setTimeout(() => {
+                if (!root.classList.contains("is-open")) root.hidden = true;
+            }, 300);
+        }
+
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        document.body.classList.toggle("mobile-sidebar-open", open);
+    };
+
+    toggle.addEventListener("click", () => {
+        setOpen(!root.classList.contains("is-open"));
+    });
+
+    closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setOpen(false));
+    });
+
+    accordionToggle?.addEventListener("click", () => {
+        const expanded = accordionToggle.getAttribute("aria-expanded") === "true";
+        accordionToggle.setAttribute("aria-expanded", String(!expanded));
+        accordionToggle.classList.toggle("is-open", !expanded);
+        accordion?.classList.toggle("is-open", !expanded);
+
+        if (accordionPanel) {
+            accordionPanel.inert = expanded;
+            accordionPanel.style.maxHeight = expanded
+                ? "0px"
+                : `${accordionPanel.scrollHeight}px`;
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && root.classList.contains("is-open")) {
+            setOpen(false);
+        }
+    });
+
+    if (accordionPanel) {
+        accordionPanel.inert = true;
+        accordionPanel.style.maxHeight = "0px";
+    }
+}
 
 function initSingleImageUploads() {
     document.querySelectorAll("[data-single-image-upload]").forEach((root) => {
@@ -205,10 +257,14 @@ function initCollectionFilters() {
 
     const dropdowns = form.querySelectorAll("[data-filter-dropdown]");
     const grid = document.querySelector("[data-collection-grid]");
-    const countEl = document.querySelector("[data-collection-count]");
-    const countWrap = document.querySelector("[data-collection-count-wrap]");
-    const countSpinner = document.querySelector(
-        "[data-collection-count-spinner]",
+    const countEls = Array.from(
+        document.querySelectorAll("[data-collection-count]"),
+    );
+    const countWraps = Array.from(
+        document.querySelectorAll("[data-collection-count-wrap]"),
+    );
+    const countSpinners = Array.from(
+        document.querySelectorAll("[data-collection-count-spinner]"),
     );
     const cards = Array.from(document.querySelectorAll("[data-product-card]"));
     const minInput = form.querySelector("[data-price-min]");
@@ -222,6 +278,84 @@ function initCollectionFilters() {
     const emptyFiltered = document.querySelector(
         "[data-collection-empty-filtered]",
     );
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    const drawer = form.querySelector("[data-mobile-filter-drawer]");
+    const drawerOpen = form.querySelector("[data-mobile-filter-open]");
+    const drawerBackdrop = form.querySelector(
+        ".collection-filter-drawer-backdrop",
+    );
+    const drawerClose = form.querySelectorAll("[data-mobile-filter-close]");
+    let drawerCloseTimer = null;
+
+    const setDrawerOpen = (open) => {
+        if (!drawer || !drawerBackdrop) return;
+
+        window.clearTimeout(drawerCloseTimer);
+
+        if (open) {
+            drawerBackdrop.hidden = false;
+            dropdowns.forEach((dropdown) => {
+                const menu = dropdown.querySelector("[data-filter-menu]");
+                if (menu) menu.hidden = false;
+            });
+            drawerBackdrop.getBoundingClientRect();
+            window.requestAnimationFrame(() => {
+                drawer.classList.add("is-open");
+                drawerBackdrop.classList.add("is-open");
+            });
+        } else {
+            drawer.classList.remove("is-open");
+            drawerBackdrop.classList.remove("is-open");
+            drawerCloseTimer = window.setTimeout(() => {
+                if (!drawer.classList.contains("is-open")) {
+                    drawerBackdrop.hidden = true;
+                }
+            }, 300);
+        }
+
+        document.body.classList.toggle("collection-filter-drawer-open", open);
+        drawerOpen?.setAttribute("aria-expanded", String(open));
+        drawer.inert = !open;
+    };
+
+    drawerOpen?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setDrawerOpen(true);
+    });
+    drawerClose.forEach((button) => {
+        button.addEventListener("click", () => setDrawerOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (
+            event.key === "Escape" &&
+            drawer?.classList.contains("is-open")
+        ) {
+            setDrawerOpen(false);
+        }
+    });
+
+    const syncDrawerMode = () => {
+        if (mobileQuery.matches) {
+            if (drawer) drawer.inert = true;
+            dropdowns.forEach((dropdown) => {
+                const menu = dropdown.querySelector("[data-filter-menu]");
+                if (menu) menu.hidden = false;
+            });
+        } else {
+            if (drawer) drawer.inert = false;
+            setDrawerOpen(false);
+            dropdowns.forEach((dropdown) => {
+                dropdown.classList.remove("is-open");
+                const menu = dropdown.querySelector("[data-filter-menu]");
+                if (menu) menu.hidden = true;
+            });
+        }
+    };
+
+    mobileQuery.addEventListener("change", syncDrawerMode);
+    syncDrawerMode();
 
     dropdowns.forEach((dropdown) => {
         const toggle = dropdown.querySelector("[data-filter-toggle]");
@@ -231,6 +365,8 @@ function initCollectionFilters() {
         toggle.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (window.matchMedia("(max-width: 767px)").matches) return;
+
             const willOpen = !dropdown.classList.contains("is-open");
 
             dropdowns.forEach((item) => {
@@ -252,8 +388,9 @@ function initCollectionFilters() {
     });
 
     const updateCount = (visible) => {
-        if (!countEl) return;
-        countEl.textContent = `${visible} ${visible === 1 ? "product" : "products"}`;
+        countEls.forEach((countEl) => {
+            countEl.textContent = `${visible} ${visible === 1 ? "product" : "products"}`;
+        });
     };
 
     const updateAvailabilitySelected = () => {
@@ -265,13 +402,17 @@ function initCollectionFilters() {
     };
 
     const setLoading = (loading) => {
-        countWrap?.classList.toggle("is-loading", loading);
+        countWraps.forEach((countWrap) => {
+            countWrap.classList.toggle("is-loading", loading);
+        });
         grid?.classList.toggle("is-filtering", loading);
-        if (countSpinner) {
+        countSpinners.forEach((countSpinner) => {
             countSpinner.hidden = !loading;
             countSpinner.style.display = loading ? "inline-block" : "";
-        }
-        if (countEl) countEl.hidden = loading;
+        });
+        countEls.forEach((countEl) => {
+            countEl.hidden = loading;
+        });
     };
 
     const syncUrl = () => {
@@ -395,6 +536,7 @@ function initCollectionFilters() {
     });
 
     document.addEventListener("click", (e) => {
+        if (mobileQuery.matches) return;
         if (e.target.closest("[data-filter-dropdown]")) return;
         dropdowns.forEach((item) => {
             item.classList.remove("is-open");

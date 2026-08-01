@@ -18,7 +18,7 @@
         </nav>
 
         {{-- Mobile menu button --}}
-        <button type="button" class="inline-flex h-10 w-10 items-center justify-center lg:hidden" id="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <button type="button" class="relative z-10 inline-flex h-10 w-10 items-center justify-center lg:hidden" id="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
             </svg>
@@ -30,12 +30,14 @@
             $headerSiteName = $headerSite?->site_name ?: 'XPERCIAINC';
             $headerLogo = $headerSite?->logoUrl() ?? asset('images/logo-mark.svg');
         @endphp
-        <a href="{{ route('home') }}" class="absolute inset-y-1 left-1/2 flex -translate-x-1/2 items-center">
-            <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}" class="h-16 w-auto max-w-[200px] object-contain" width="200" height="64">
+        <a href="{{ route('home') }}" class="absolute inset-y-1 left-1/2 z-[1] flex -translate-x-1/2 items-center px-12 sm:px-14 lg:px-0">
+            <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}"
+                 class="h-10 w-auto max-w-[130px] object-contain sm:h-12 sm:max-w-[160px] lg:h-16 lg:max-w-[200px]"
+                 width="200" height="64">
         </a>
 
         {{-- Right utilities --}}
-        <div class="flex items-center gap-3 sm:gap-4">
+        <div class="relative z-10 flex items-center gap-3 sm:gap-4">
             <button type="button" class="header-icon" aria-label="Search" data-search-open>
                 <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
                     <circle cx="11" cy="11" r="7"/>
@@ -98,29 +100,51 @@
         </div>
     </div>
 
-    {{-- Mobile nav --}}
-    <div id="mobile-menu" class="hidden border-t border-black/5 bg-white lg:hidden">
-        <nav class="flex flex-col gap-1 px-5 py-4" aria-label="Mobile">
-            <a href="{{ route('home') }}" class="py-2 text-sm font-medium">Home</a>
-
-            <div class="border-t border-black/5 pt-2">
-                <p class="py-2 text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink/50">Our Collection</p>
-                @foreach ($menuColumns ?? [] as $column => $categories)
-                    @foreach ($categories->sortBy('menu_row') as $category)
-                        <a href="{{ route('collections.show', $category->slug) }}" class="block py-1.5 text-sm font-medium text-brand-ink">
-                            {{ $category->name }}
-                        </a>
-                        @foreach ($category->children as $child)
-                            <a href="{{ route('collections.show', $child->slug) }}" class="block py-1 pl-3 text-sm text-brand-ink/70">
-                                {{ $child->name }}
-                            </a>
-                        @endforeach
-                    @endforeach
-                @endforeach
+    {{-- Mobile sidebar --}}
+    @php
+        $mobileMenuCategories = collect($menuColumns ?? [])
+            ->sortKeys()
+            ->flatMap(fn ($cats) => $cats->sortBy('menu_row'))
+            ->values();
+    @endphp
+    <div id="mobile-menu" class="mobile-sidebar lg:hidden" hidden data-mobile-sidebar>
+        <button type="button" class="mobile-sidebar-backdrop" data-mobile-sidebar-close aria-label="Close menu"></button>
+        <aside class="mobile-sidebar-panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <div class="mobile-sidebar-head">
+                <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}" class="h-10 w-auto max-w-[140px] object-contain">
+                <button type="button" class="mobile-sidebar-close" data-mobile-sidebar-close aria-label="Close menu">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+                    </svg>
+                </button>
             </div>
+            <nav class="mobile-sidebar-nav" aria-label="Mobile">
+                <a href="{{ route('home') }}" class="mobile-sidebar-link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
 
-            <a href="{{ route('shop') }}" class="mt-2 border-t border-black/5 py-2 text-sm font-medium">Shop</a>
-            <a href="{{ route('contact.show') }}" class="py-2 text-sm font-medium {{ request()->routeIs('contact.*') ? 'text-brand-ink' : '' }}">Contact Us</a>
-        </nav>
+                <div class="mobile-sidebar-group" data-mobile-accordion>
+                    <button type="button" class="mobile-sidebar-accordion" data-mobile-accordion-toggle aria-expanded="false">
+                        <span>Our Collection</span>
+                        <svg class="h-4 w-4" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                            <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="mobile-sidebar-accordion-panel">
+                        @foreach ($mobileMenuCategories as $category)
+                            <a href="{{ route('collections.show', $category->slug) }}" class="mobile-sidebar-link mobile-sidebar-link--parent">
+                                {{ $category->name }}
+                            </a>
+                            @foreach ($category->children as $child)
+                                <a href="{{ route('collections.show', $child->slug) }}" class="mobile-sidebar-link mobile-sidebar-link--child">
+                                    {{ $child->name }}
+                                </a>
+                            @endforeach
+                        @endforeach
+                    </div>
+                </div>
+
+                <a href="{{ route('shop') }}" class="mobile-sidebar-link {{ request()->routeIs('shop') ? 'is-active' : '' }}">Shop</a>
+                <a href="{{ route('contact.show') }}" class="mobile-sidebar-link {{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contact Us</a>
+            </nav>
+        </aside>
     </div>
 </header>
