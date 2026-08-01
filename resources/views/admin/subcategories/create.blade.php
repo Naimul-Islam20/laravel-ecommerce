@@ -4,7 +4,7 @@
 @section('heading', 'Create Subcategory')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.subcategories.store') }}" class="rounded-xl border border-brand-ink/10 bg-white p-5">
+    <form method="POST" action="{{ route('admin.subcategories.store') }}" enctype="multipart/form-data" class="rounded-xl border border-brand-ink/10 bg-white p-5">
         @csrf
         @include('admin.subcategories._form')
     </form>

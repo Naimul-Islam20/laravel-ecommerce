@@ -89,12 +89,8 @@ class Category extends Model
 
     public function imageUrl(): ?string
     {
-        $path = $this->image ?: 'images/category-1.webp';
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return asset($path);
+        return app(\App\Services\ProductImageService::class)
+            ->url($this->image, 'images/category-1.webp');
     }
 }
+

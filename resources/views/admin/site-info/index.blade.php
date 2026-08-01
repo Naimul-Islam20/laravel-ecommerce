@@ -10,7 +10,7 @@
             <h2 class="font-display text-lg font-semibold">Company Details</h2>
             <p class="mt-1 text-sm text-brand-ink/60">Brand name and short about text for the footer.</p>
 
-            <form method="POST" action="{{ route('admin.site-info.update') }}" class="mt-4 grid gap-4 md:grid-cols-2">
+            <form method="POST" action="{{ route('admin.site-info.update') }}" enctype="multipart/form-data" class="mt-4 grid gap-4 md:grid-cols-2">
                 @csrf
                 @method('PUT')
 
@@ -47,29 +47,21 @@
                 </div>
 
                 <div>
-                    <label for="logo" class="mb-1 block text-sm font-medium">Logo</label>
-                    <input id="logo" name="logo" type="text"
-                           value="{{ old('logo', $settings->logo ?? 'images/logo-mark.svg') }}"
-                           class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
-                           placeholder="images/logo-mark.svg">
-                    <p class="mt-1 text-xs text-brand-ink/50">Also used as OG / social share image</p>
-                    @if ($settings->logoUrl())
-                        <img src="{{ $settings->logoUrl() }}" alt="Logo preview" class="mt-3 h-14 w-14 rounded border border-brand-ink/10 object-contain bg-white p-1">
-                    @endif
-                    @error('logo')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                    @include('admin.partials.image-upload', [
+                        'name' => 'logo',
+                        'label' => 'Logo',
+                        'url' => $settings->logo ? $settings->logoUrl() : null,
+                        'help' => 'Also used as OG / social share image',
+                    ])
                 </div>
 
                 <div>
-                    <label for="favicon" class="mb-1 block text-sm font-medium">Icon / Favicon</label>
-                    <input id="favicon" name="favicon" type="text"
-                           value="{{ old('favicon', $settings->favicon ?? 'images/logo-mark.svg') }}"
-                           class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
-                           placeholder="images/logo-mark.svg">
-                    <p class="mt-1 text-xs text-brand-ink/50">Browser tab icon. Leave blank to use logo.</p>
-                    @if ($settings->faviconUrl())
-                        <img src="{{ $settings->faviconUrl() }}" alt="Favicon preview" class="mt-3 h-10 w-10 rounded border border-brand-ink/10 object-contain bg-white p-1">
-                    @endif
-                    @error('favicon')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                    @include('admin.partials.image-upload', [
+                        'name' => 'favicon',
+                        'label' => 'Icon / Favicon',
+                        'url' => $settings->favicon ? $settings->faviconUrl() : null,
+                        'help' => 'Browser tab icon. Leave blank to keep current or use logo.',
+                    ])
                 </div>
 
                 <div class="md:col-span-2">

@@ -30,9 +30,8 @@
             $headerSiteName = $headerSite?->site_name ?: 'XPERCIAINC';
             $headerLogo = $headerSite?->logoUrl() ?? asset('images/logo-mark.svg');
         @endphp
-        <a href="{{ route('home') }}" class="absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5">
-            <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}" class="h-7 w-7 object-contain" width="28" height="28">
-            <span class="font-display text-[15px] font-bold tracking-[0.18em] text-brand-ink">{{ $headerSiteName }}</span>
+        <a href="{{ route('home') }}" class="absolute inset-y-1 left-1/2 flex -translate-x-1/2 items-center">
+            <img src="{{ $headerLogo }}" alt="{{ $headerSiteName }}" class="h-16 w-auto max-w-[200px] object-contain" width="200" height="64">
         </a>
 
         {{-- Right utilities --}}

@@ -23,7 +23,7 @@ abstract class AdminUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($userId),
             ],
-            'is_active' => ['sometimes', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ];
 
         if ($this->isMethod('post')) {
@@ -38,7 +38,7 @@ abstract class AdminUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'is_active' => $this->boolean('is_active'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
         ]);
     }
 }

@@ -34,7 +34,6 @@ class StoreHomeSectionRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('home_sections', 'slug')],
             'category_id' => [
                 Rule::requiredIf(fn () => in_array($this->input('type'), $catalogTypes, true)),
                 'nullable',
@@ -45,8 +44,8 @@ class StoreHomeSectionRequest extends FormRequest
             ],
             'product_limit' => ['nullable', 'integer', 'min:1', 'max:24'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['sometimes', 'boolean'],
-            'show_view_all' => ['sometimes', 'boolean'],
+            'is_active' => ['required', 'boolean'],
+            'show_view_all' => ['required', 'boolean'],
             'grid_columns' => ['nullable', 'integer', Rule::in([3, 4, 5, 6])],
         ];
     }
@@ -77,8 +76,8 @@ class StoreHomeSectionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $merge = [
-            'is_active' => $this->boolean('is_active'),
-            'show_view_all' => $this->boolean('show_view_all'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
+            'show_view_all' => filter_var($this->input('show_view_all', true), FILTER_VALIDATE_BOOLEAN),
         ];
 
         $type = $this->input('type');

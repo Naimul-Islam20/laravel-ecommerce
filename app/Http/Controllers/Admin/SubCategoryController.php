@@ -6,13 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreSubCategoryRequest;
 use App\Http\Requests\Admin\UpdateSubCategoryRequest;
 use App\Models\Category;
+use App\Services\ProductImageService;
 use App\Services\SlugService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class SubCategoryController extends Controller
 {
-    public function __construct(private SlugService $slugService) {}
+    public function __construct(
+        private SlugService $slugService,
+        private ProductImageService $imageService,
+    ) {}
 
     public function index(): View
     {
@@ -37,13 +41,14 @@ class SubCategoryController extends Controller
 
     public function store(StoreSubCategoryRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Category::class);
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['show_on_home'] = false;
         $data['menu_column'] = null;
         $data['menu_row'] = null;
         $data['home_sort_order'] = 0;
+        $data['image'] = $this->imageService->replace(null, $request->file('image'), 'categories');
 
         Category::create($data);
 
@@ -66,13 +71,14 @@ class SubCategoryController extends Controller
     {
         abort_if($subcategory->parent_id === null, 404);
 
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Category::class, $subcategory->id);
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['show_on_home'] = false;
         $data['menu_column'] = null;
         $data['menu_row'] = null;
         $data['home_sort_order'] = 0;
+        $data['image'] = $this->imageService->replace($subcategory->image, $request->file('image'), 'categories');
 
         $subcategory->update($data);
 
@@ -91,6 +97,7 @@ class SubCategoryController extends Controller
                 ->with('error', 'Cannot delete a subcategory that has products.');
         }
 
+        $this->imageService->delete($subcategory->image);
         $subcategory->delete();
 
         return redirect()

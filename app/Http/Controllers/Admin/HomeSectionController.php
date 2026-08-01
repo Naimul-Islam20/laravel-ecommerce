@@ -74,7 +74,7 @@ class HomeSectionController extends Controller
     private function prepareSectionData(array $data, ?int $ignoreId = null): array
     {
         $title = $data['title'] ?? '';
-        $data['slug'] = ($data['slug'] ?? null) ?: $this->slugService->unique($title, HomeSection::class, $ignoreId);
+        $data['slug'] = $this->slugService->unique($title, HomeSection::class, $ignoreId);
         $data['product_limit'] = $data['product_limit'] ?? 6;
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['grid_columns'] = $data['grid_columns'] ?? 3;

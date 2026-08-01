@@ -44,14 +44,7 @@
         </select>
         <p class="mt-1 text-xs text-brand-ink/50">Name becomes section title. Newest products show first.</p>
         @error('category_id')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-    </div>
-
-    <div>
-        <label for="slug" class="mb-1 block text-sm font-medium">Slug</label>
-        <input id="slug" name="slug" type="text" value="{{ old('slug', $section->slug) }}"
-               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm" placeholder="Auto-generated if empty">
-        @error('slug')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-    </div>
+        </div>
 
     <div>
         <label for="product_limit" class="mb-1 block text-sm font-medium">Product Limit</label>
@@ -77,17 +70,17 @@
         </select>
         @error('grid_columns')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
-</div>
-
-<div class="mt-4 flex flex-wrap gap-6">
-    <label class="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $section->is_active ?? true))>
-        Active
-    </label>
-    <label class="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="show_view_all" value="1" @checked(old('show_view_all', $section->show_view_all ?? true))>
-        Show “View all” link
-    </label>
+    <div>
+        <label for="show_view_all" class="mb-1 block text-sm font-medium">View all link</label>
+        @php
+            $viewAllValue = (int) old('show_view_all', ($section->show_view_all ?? true) ? 1 : 0);
+        @endphp
+        <select id="show_view_all" name="show_view_all" class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+            <option value="1" @selected($viewAllValue === 1)>Show</option>
+            <option value="0" @selected($viewAllValue === 0)>Hide</option>
+        </select>
+        @error('show_view_all')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
 </div>
 
 <div class="mt-6 flex items-center gap-3">

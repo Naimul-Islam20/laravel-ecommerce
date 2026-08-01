@@ -1,9 +1,21 @@
+@php
+    $collectionColumns = max(1, min(6, (int) ($homeSettings?->collectionsColumns() ?? 4)));
+@endphp
+
 <section id="collections" class="collections-section">
     <div class="container">
         <h2 class="collections-heading">Collections</h2>
 
-        <div class="collections-grid">
-            @forelse ($collections ?? [] as $collection)
+        <div
+            class="collections-grid"
+            style="--collections-columns: {{ $collectionColumns }};"
+        >
+            @forelse ($collections ?? [] as $item)
+                @php
+                    $collection = $item->category;
+                @endphp
+                @continue(! $collection)
+
                 <a href="{{ route('collections.show', $collection->slug) }}" class="collection-card">
                     <div class="collection-card-media">
                         @if ($collection->imageUrl())

@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreHomeHeroSlideRequest;
 use App\Http\Requests\Admin\UpdateHomeHeroSlideRequest;
 use App\Models\HomeHeroSlide;
+use App\Services\ProductImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class HomeHeroSlideController extends Controller
 {
+    public function __construct(private ProductImageService $imageService) {}
+
     public function create(): View
     {
         return view('admin.home-page.hero-slides.create', [
@@ -20,8 +23,9 @@ class HomeHeroSlideController extends Controller
 
     public function store(StoreHomeHeroSlideRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['image'] = $this->imageService->store($request->file('image'), 'hero');
 
         HomeHeroSlide::create($data);
 
@@ -39,8 +43,13 @@ class HomeHeroSlideController extends Controller
 
     public function update(UpdateHomeHeroSlideRequest $request, HomeHeroSlide $homeHeroSlide): RedirectResponse
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['image'] = $this->imageService->replace(
+            $homeHeroSlide->image,
+            $request->file('image'),
+            'hero'
+        );
 
         $homeHeroSlide->update($data);
 
@@ -51,6 +60,7 @@ class HomeHeroSlideController extends Controller
 
     public function destroy(HomeHeroSlide $homeHeroSlide): RedirectResponse
     {
+        $this->imageService->delete($homeHeroSlide->image);
         $homeHeroSlide->delete();
 
         return redirect()

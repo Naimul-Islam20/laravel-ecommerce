@@ -22,21 +22,18 @@ abstract class CategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('categories', 'slug')->ignore($categoryId),
             ],
-            'image' => ['nullable', 'string', 'max:500'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'menu_column' => ['nullable', 'integer', 'min:1', 'max:10'],
             'menu_row' => ['nullable', 'integer', 'min:0'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['sometimes', 'boolean'],
-            'show_on_home' => ['sometimes', 'boolean'],
-            'home_sort_order' => ['nullable', 'integer', 'min:0'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'is_active' => $this->boolean('is_active'),
-            'show_on_home' => $this->boolean('show_on_home'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
             'parent_id' => null,
         ]);
     }

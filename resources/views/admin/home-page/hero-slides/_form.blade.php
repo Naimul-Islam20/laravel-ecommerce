@@ -1,9 +1,11 @@
 <div class="grid gap-4 md:grid-cols-2">
     <div>
-        <label for="image" class="mb-1 block text-sm font-medium">Image Path *</label>
-        <input id="image" name="image" type="text" value="{{ old('image', $slide->image) }}" required
-               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm" placeholder="images/hero-7.png">
-        @error('image')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        @include('admin.partials.image-upload', [
+            'name' => 'image',
+            'label' => 'Image',
+            'url' => $slide->exists && $slide->image ? $slide->imageUrl() : null,
+            'required' => ! ($slide->exists && $slide->image),
+        ])
     </div>
     <div>
         <label for="alt_text" class="mb-1 block text-sm font-medium">Alt Text</label>
@@ -17,11 +19,16 @@
                class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
         @error('sort_order')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
-    <div class="flex items-end">
-        <label class="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $slide->is_active ?? true))>
-            Active
-        </label>
+    <div>
+        <label for="is_active" class="mb-1 block text-sm font-medium">Status *</label>
+        @php
+            $statusValue = (int) old('is_active', ($slide->is_active ?? true) ? 1 : 0);
+        @endphp
+        <select id="is_active" name="is_active" required class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+            <option value="1" @selected($statusValue === 1)>Active</option>
+            <option value="0" @selected($statusValue === 0)>Inactive</option>
+        </select>
+        @error('is_active')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 </div>
 

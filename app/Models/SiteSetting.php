@@ -150,16 +150,8 @@ class SiteSetting extends Model
 
     private function mediaUrl(?string $path, string $fallback): string
     {
-        $path = trim((string) $path);
-
-        if ($path === '') {
-            return asset($fallback);
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return asset(ltrim($path, '/'));
+        return app(\App\Services\ProductImageService::class)
+            ->url($path, $fallback) ?? asset($fallback);
     }
 }
+

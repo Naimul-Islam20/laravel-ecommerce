@@ -28,16 +28,16 @@ abstract class SubCategoryRequest extends FormRequest
                 Rule::exists('categories', 'id')->whereNull('parent_id'),
                 Rule::notIn(array_filter([$categoryId])),
             ],
-            'image' => ['nullable', 'string', 'max:500'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['sometimes', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'is_active' => $this->boolean('is_active'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
             'show_on_home' => false,
             'menu_column' => null,
             'menu_row' => null,

@@ -14,17 +14,17 @@ class StoreHomeHeroSlideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'string', 'max:500'],
+            'image' => [$this->isMethod('post') ? 'required' : 'nullable', 'image', 'max:5120'],
             'alt_text' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'is_active' => ['sometimes', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'is_active' => $this->boolean('is_active'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
         ]);
     }
 }

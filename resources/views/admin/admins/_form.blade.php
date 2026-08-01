@@ -26,14 +26,17 @@
         <input id="password_confirmation" name="password_confirmation" type="password"
                class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
     </div>
-</div>
-
-<div class="mt-4">
-    <label class="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $admin->is_active ?? true))>
-        Active
-    </label>
-    @error('is_active')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    <div>
+        <label for="is_active" class="mb-1 block text-sm font-medium">Status *</label>
+        @php
+            $statusValue = (int) old('is_active', ($admin->is_active ?? true) ? 1 : 0);
+        @endphp
+        <select id="is_active" name="is_active" required class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+            <option value="1" @selected($statusValue === 1)>Active</option>
+            <option value="0" @selected($statusValue === 0)>Inactive</option>
+        </select>
+        @error('is_active')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
 </div>
 
 <div class="mt-6 flex items-center gap-3">

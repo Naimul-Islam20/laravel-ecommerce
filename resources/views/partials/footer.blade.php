@@ -29,10 +29,8 @@
 
             <div class="footer-col footer-brand">
                 <a href="{{ route('home') }}" class="footer-logo">
-                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="footer-logo-mark" width="48" height="48">
-                    <span class="footer-logo-text">{{ $siteName }}</span>
+                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="footer-logo-mark" width="224" height="80">
                 </a>
-                <h3 class="footer-heading">{{ $siteName }}</h3>
                 @if ($aboutText)
                     <p class="footer-about">{{ $aboutText }}</p>
                 @endif

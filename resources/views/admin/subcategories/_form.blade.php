@@ -24,10 +24,11 @@
         @error('parent_id')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
     <div>
-        <label for="image" class="mb-1 block text-sm font-medium">Image Path</label>
-        <input id="image" name="image" type="text" value="{{ old('image', $subcategory->image) }}"
-               class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm" placeholder="images/category-1.webp">
-        @error('image')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        @include('admin.partials.image-upload', [
+            'name' => 'image',
+            'label' => 'Image',
+            'url' => $subcategory->image ? $subcategory->imageUrl() : null,
+        ])
     </div>
     <div>
         <label for="sort_order" class="mb-1 block text-sm font-medium">Sort Order</label>
@@ -36,13 +37,17 @@
                class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
         @error('sort_order')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
-</div>
-
-<div class="mt-4">
-    <label class="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $subcategory->is_active ?? true))>
-        Active
-    </label>
+    <div>
+        <label for="is_active" class="mb-1 block text-sm font-medium">Status *</label>
+        @php
+            $statusValue = (int) old('is_active', ($subcategory->is_active ?? true) ? 1 : 0);
+        @endphp
+        <select id="is_active" name="is_active" required class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+            <option value="1" @selected($statusValue === 1)>Active</option>
+            <option value="0" @selected($statusValue === 0)>Inactive</option>
+        </select>
+        @error('is_active')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
 </div>
 
 <div class="mt-6 flex items-center gap-3">

@@ -6,13 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Services\ProductImageService;
 use App\Services\SlugService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function __construct(private SlugService $slugService) {}
+    public function __construct(
+        private SlugService $slugService,
+        private ProductImageService $imageService,
+    ) {}
 
     public function index(): View
     {
@@ -35,11 +39,12 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['parent_id'] = null;
         $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Category::class);
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['home_sort_order'] = $data['home_sort_order'] ?? 0;
+        $data['image'] = $this->imageService->replace(null, $request->file('image'), 'categories');
 
         Category::create($data);
 
@@ -59,11 +64,12 @@ class CategoryController extends Controller
     {
         abort_if($category->parent_id !== null, 404);
 
-        $data = $request->validated();
+        $data = $request->safe()->except(['image']);
         $data['parent_id'] = null;
         $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Category::class, $category->id);
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['home_sort_order'] = $data['home_sort_order'] ?? 0;
+        $data['image'] = $this->imageService->replace($category->image, $request->file('image'), 'categories');
 
         $category->update($data);
 
@@ -88,6 +94,7 @@ class CategoryController extends Controller
                 ->with('error', 'Cannot delete a category that has subcategories. Remove subcategories first.');
         }
 
+        $this->imageService->delete($category->image);
         $category->delete();
 
         return redirect()

@@ -20,7 +20,80 @@ document.addEventListener("DOMContentLoaded", () => {
     initCollectionFilters();
     initScrollReveal();
     initContactForm();
+    initAdminToasts();
+    initSingleImageUploads();
 });
+
+function initSingleImageUploads() {
+    document.querySelectorAll("[data-single-image-upload]").forEach((root) => {
+        const input = root.querySelector("[data-image-input]");
+        const preview = root.querySelector("[data-image-preview]");
+        const placeholder = root.querySelector("[data-image-placeholder]");
+        if (!input || !preview) return;
+
+        input.addEventListener("change", () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            preview.src = url;
+            preview.classList.remove("hidden");
+            placeholder?.classList.add("hidden");
+
+            preview.addEventListener(
+                "load",
+                () => URL.revokeObjectURL(url),
+                { once: true },
+            );
+        });
+    });
+}
+
+function initAdminToasts() {
+    const stack = document.querySelector("[data-admin-toast-stack]");
+    const source = document.querySelector("[data-admin-toasts]");
+    if (!stack || !source) return;
+
+    let messages = [];
+    try {
+        messages = JSON.parse(source.textContent || "[]");
+    } catch {
+        messages = [];
+    }
+
+    if (!Array.isArray(messages) || messages.length === 0) return;
+
+    const dismiss = (toast) => {
+        toast.classList.add("is-leaving");
+        window.setTimeout(() => toast.remove(), 220);
+    };
+
+    messages.forEach((item, index) => {
+        if (!item?.message) return;
+
+        const toast = document.createElement("div");
+        toast.className = `admin-toast admin-toast--${item.type || "success"}`;
+        toast.setAttribute("role", "status");
+
+        const text = document.createElement("p");
+        text.className = "admin-toast-message";
+        text.textContent = String(item.message);
+
+        const close = document.createElement("button");
+        close.type = "button";
+        close.className = "admin-toast-close";
+        close.setAttribute("aria-label", "Dismiss");
+        close.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>';
+        close.addEventListener("click", () => dismiss(toast));
+
+        toast.append(text, close);
+        stack.appendChild(toast);
+
+        window.requestAnimationFrame(() => toast.classList.add("is-visible"));
+        window.setTimeout(() => dismiss(toast), 4200 + index * 350);
+    });
+}
 
 function initContactForm() {
     const form = document.querySelector("[data-contact-form]");

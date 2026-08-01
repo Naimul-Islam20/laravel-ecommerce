@@ -32,12 +32,8 @@ class HomeHeroSlide extends Model
 
     public function imageUrl(): string
     {
-        $path = $this->image ?: 'images/hero-7.png';
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return asset($path);
+        return app(\App\Services\ProductImageService::class)
+            ->url($this->image, 'images/hero-7.png') ?? asset('images/hero-7.png');
     }
 }
+

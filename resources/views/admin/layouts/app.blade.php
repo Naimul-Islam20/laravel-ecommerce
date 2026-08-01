@@ -115,21 +115,22 @@
             </header>
 
             <main class="flex-1 p-4 sm:p-6">
-                @if (session('success'))
-                    <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
                 @yield('content')
             </main>
         </div>
     </div>
+
+    <div class="admin-toast-stack" data-admin-toast-stack aria-live="polite" aria-relevant="additions"></div>
+
+    @php
+        $adminToasts = array_values(array_filter([
+            session('success') ? ['type' => 'success', 'message' => session('success')] : null,
+            session('error') ? ['type' => 'error', 'message' => session('error')] : null,
+            session('warning') ? ['type' => 'warning', 'message' => session('warning')] : null,
+            session('status') ? ['type' => 'success', 'message' => session('status')] : null,
+        ]));
+    @endphp
+
+    <script type="application/json" data-admin-toasts>@json($adminToasts)</script>
 </body>
 </html>

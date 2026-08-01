@@ -4,7 +4,7 @@
 @section('heading', 'Add Hero Slide')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.home-hero-slides.store') }}" class="rounded-xl border border-brand-ink/10 bg-white p-5">
+    <form method="POST" action="{{ route('admin.home-hero-slides.store') }}" enctype="multipart/form-data" class="rounded-xl border border-brand-ink/10 bg-white p-5">
         @csrf
         @include('admin.home-page.hero-slides._form')
     </form>

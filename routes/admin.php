@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HomeCollectionItemController;
 use App\Http\Controllers\Admin\HomeHeroSlideController;
 use App\Http\Controllers\Admin\HomePageController;
 use App\Http\Controllers\Admin\HomeSectionController;
@@ -32,8 +33,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('home-page', [HomePageController::class, 'index'])->name('home-page.index');
         Route::put('home-page/settings', [HomePageController::class, 'updateSettings'])->name('home-page.settings.update');
+        Route::get('home-page/collections-settings', [HomePageController::class, 'editCollectionsSettings'])->name('home-page.collections-settings.edit');
+        Route::put('home-page/collections-settings', [HomePageController::class, 'updateCollectionsSettings'])->name('home-page.collections-settings.update');
         Route::resource('home-hero-slides', HomeHeroSlideController::class)->except(['show', 'index']);
         Route::resource('home-sections', HomeSectionController::class)->except(['show', 'index']);
+        Route::resource('home-collection-items', HomeCollectionItemController::class)->except(['show', 'index']);
 
         Route::get('site-info', [SiteInfoController::class, 'index'])->name('site-info.index');
         Route::put('site-info', [SiteInfoController::class, 'update'])->name('site-info.update');

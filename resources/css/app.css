@@ -411,7 +411,7 @@
 
     @media (min-width: 768px) {
         .collections-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(var(--collections-columns, 4), minmax(0, 1fr));
             gap: 1.1rem 0.5rem;
         }
     }
@@ -692,30 +692,24 @@
 .footer-brand {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
 }
 
 .footer-logo {
     display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     margin-bottom: 1.1rem;
     color: #111;
 }
 
 .footer-logo-mark {
-    width: 2.75rem;
-    height: 2.75rem;
-}
-
-.footer-logo-text {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    color: #111;
+    width: auto;
+    height: 5rem;
+    max-width: 14rem;
+    object-fit: contain;
 }
 
 .footer-about {
@@ -1862,4 +1856,92 @@ body.product-lightbox-open {
 
 .shop-pagination-item.is-ellipsis .shop-pagination-link {
     border-color: transparent;
+}
+
+/* Admin toast notifications */
+.admin-toast-stack {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: min(22rem, calc(100vw - 2rem));
+    pointer-events: none;
+}
+
+.admin-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 30px rgba(17, 17, 17, 0.12);
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.admin-toast.is-leaving {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+}
+
+.admin-toast--success {
+    background: #ecfdf3;
+    border-color: #abefc6;
+    color: #067647;
+}
+
+.admin-toast--error {
+    background: #fef3f2;
+    border-color: #fecdca;
+    color: #b42318;
+}
+
+.admin-toast--warning {
+    background: #fffaeb;
+    border-color: #fedf89;
+    color: #b54708;
+}
+
+.admin-toast-message {
+    margin: 0;
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.admin-toast-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.admin-toast-close:hover {
+    opacity: 1;
+}
+
+.admin-toast-close svg {
+    width: 0.95rem;
+    height: 0.95rem;
 }

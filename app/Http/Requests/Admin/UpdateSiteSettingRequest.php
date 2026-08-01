@@ -16,8 +16,8 @@ class UpdateSiteSettingRequest extends FormRequest
         return [
             'site_name' => ['required', 'string', 'max:255'],
             'currency' => ['required', 'string', 'max:20'],
-            'logo' => ['nullable', 'string', 'max:500'],
-            'favicon' => ['nullable', 'string', 'max:500'],
+            'logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:5120'],
+            'favicon' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg,ico', 'max:2048'],
             'company_name' => ['nullable', 'string', 'max:255'],
             'about_text' => ['nullable', 'string', 'max:2000'],
             'phone' => ['nullable', 'string', 'max:50'],
@@ -37,8 +37,6 @@ class UpdateSiteSettingRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $nullable = [
-            'logo',
-            'favicon',
             'company_name',
             'about_text',
             'phone',
