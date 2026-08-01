@@ -7,13 +7,13 @@
     <title>Admin Login — {{ ($siteSettings ?? null)?->site_name ?: 'xperciainc' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="flex min-h-screen items-center justify-center bg-brand-mist px-4 text-brand-ink antialiased">
-    <div class="w-full max-w-md rounded-2xl border border-brand-ink/10 bg-white p-8 shadow-sm">
-        <div class="mb-8 text-center">
+<body class="flex min-h-screen items-center justify-center bg-brand-mist px-4 py-8 text-brand-ink antialiased">
+    <div class="w-full max-w-md rounded-2xl border border-brand-ink/10 bg-white p-5 shadow-sm sm:p-8">
+        <div class="mb-6 text-center sm:mb-8">
             <img src="{{ ($siteSettings ?? null)?->logoUrl() ?? asset('images/logo-mark.svg') }}"
                  alt="{{ ($siteSettings ?? null)?->site_name ?: 'Admin' }}"
-                 class="mx-auto mb-5 h-16 w-auto max-w-[200px] object-contain">
-            <h1 class="font-display text-2xl font-semibold">Admin Login</h1>
+                 class="mx-auto mb-4 h-12 w-auto max-w-[160px] object-contain sm:mb-5 sm:h-16 sm:max-w-[200px]">
+            <h1 class="font-display text-xl font-semibold sm:text-2xl">Admin Login</h1>
             <p class="mt-2 text-sm text-brand-ink/60">Sign in to manage the storefront</p>
         </div>
 

@@ -13,7 +13,7 @@
 
     <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+            <table class="w-full min-w-[720px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                     <tr>
                         <th class="px-5 py-3 font-medium">Name</th>

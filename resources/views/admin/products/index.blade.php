@@ -18,7 +18,7 @@
 
     <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+            <table class="w-full min-w-[760px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                     <tr>
                         <th class="px-5 py-3 font-medium">Name</th>
@@ -32,8 +32,8 @@
                     @forelse ($products as $product)
                         <tr class="border-t border-brand-ink/5">
                             <td class="px-5 py-3">
-                                <div class="font-medium">{{ $product->name }}</div>
-                                <div class="text-xs text-brand-ink/50">{{ $product->slug }}</div>
+                                <div class="max-w-40 truncate font-medium" title="{{ $product->name }}">{{ $product->name }}</div>
+                                <div class="max-w-40 truncate text-xs text-brand-ink/50" title="{{ $product->slug }}">{{ $product->slug }}</div>
                             </td>
                             <td class="px-5 py-3">{{ $product->category?->name ?? '—' }}</td>
                             <td class="px-5 py-3">{{ $product->formattedPriceFrom() }}</td>

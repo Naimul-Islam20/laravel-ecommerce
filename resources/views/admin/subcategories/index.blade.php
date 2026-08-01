@@ -18,7 +18,7 @@
 
     <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+            <table class="w-full min-w-[700px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                     <tr>
                         <th class="px-5 py-3 font-medium">Name</th>
@@ -32,9 +32,13 @@
                     @forelse ($subcategories as $subcategory)
                         <tr class="border-t border-brand-ink/5">
                             <td class="px-5 py-3">
-                                <div class="font-medium">{{ $subcategory->name }}</div>
+                                <div class="max-w-40 truncate font-medium" title="{{ $subcategory->name }}">{{ $subcategory->name }}</div>
                             </td>
-                            <td class="px-5 py-3">{{ $subcategory->parent?->name ?? '—' }}</td>
+                            <td class="px-5 py-3">
+                                <div class="max-w-40 truncate" title="{{ $subcategory->parent?->name ?? '—' }}">
+                                    {{ $subcategory->parent?->name ?? '—' }}
+                                </div>
+                            </td>
                             <td class="px-5 py-3">{{ $subcategory->products_count }}</td>
                             <td class="px-5 py-3">
                                 <span class="rounded-full px-2 py-0.5 text-xs {{ $subcategory->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">

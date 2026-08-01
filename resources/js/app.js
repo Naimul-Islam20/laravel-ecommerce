@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     initMobileSidebar();
+    initAdminSidebar();
     initCollectionMega();
     initSearchOverlay();
     initHeroSlider();
@@ -74,6 +75,58 @@ function initMobileSidebar() {
         accordionPanel.inert = true;
         accordionPanel.style.maxHeight = "0px";
     }
+}
+
+function initAdminSidebar() {
+    const root = document.querySelector("[data-admin-sidebar]");
+    const toggle = document.getElementById("admin-menu-toggle");
+    if (!root || !toggle) return;
+
+    const closeButtons = root.querySelectorAll("[data-admin-sidebar-close]");
+    let closeTimer = null;
+
+    const setOpen = (open) => {
+        window.clearTimeout(closeTimer);
+
+        if (open) {
+            root.hidden = false;
+            root.getBoundingClientRect();
+            window.requestAnimationFrame(() => root.classList.add("is-open"));
+        } else {
+            root.classList.remove("is-open");
+            closeTimer = window.setTimeout(() => {
+                if (!root.classList.contains("is-open")) root.hidden = true;
+            }, 300);
+        }
+
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        document.body.classList.toggle("admin-sidebar-open", open);
+    };
+
+    toggle.addEventListener("click", () => {
+        setOpen(!root.classList.contains("is-open"));
+    });
+
+    closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && root.classList.contains("is-open")) {
+            setOpen(false);
+        }
+    });
+
+    window.addEventListener(
+        "resize",
+        () => {
+            if (window.matchMedia("(min-width: 1024px)").matches && root.classList.contains("is-open")) {
+                setOpen(false);
+            }
+        },
+        { passive: true }
+    );
 }
 
 function initSingleImageUploads() {

@@ -6,17 +6,17 @@
 
 @section('content')
     <div class="space-y-6">
-        <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
+        <section class="rounded-xl border border-brand-ink/10 bg-white p-4 sm:p-5">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div class="min-w-0">
                     <h2 class="font-display text-lg font-semibold">Hero Slides</h2>
                     <p class="mt-1 text-sm text-brand-ink/60">Each slide has its own image, button text, and button link.</p>
                 </div>
-                <a href="{{ route('admin.home-hero-slides.create') }}" class="rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Slide</a>
+                <a href="{{ route('admin.home-hero-slides.create') }}" class="inline-flex shrink-0 justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Slide</a>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+                <table class="w-full min-w-[760px] text-sm">
                     <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                         <tr>
                             <th class="px-4 py-3 font-medium">Order</th>
@@ -58,9 +58,9 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
+        <section class="rounded-xl border border-brand-ink/10 bg-white p-4 sm:p-5">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div class="min-w-0">
                     <h2 class="font-display text-lg font-semibold">Collections</h2>
                     <p class="mt-1 text-sm text-brand-ink/60">
                         Homepage Collections cards. Layout:
@@ -68,14 +68,14 @@
                         (max {{ $settings->collectionsLimit() }} cards).
                     </p>
                 </div>
-                <div class="flex shrink-0 items-center gap-2">
-                    <a href="{{ route('admin.home-page.collections-settings.edit') }}" class="rounded-lg border border-brand-ink/15 px-4 py-2 text-sm font-medium hover:bg-brand-mist">Edit</a>
-                    <a href="{{ route('admin.home-collection-items.create') }}" class="rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Collection</a>
+                <div class="flex shrink-0 flex-wrap items-center gap-2">
+                    <a href="{{ route('admin.home-page.collections-settings.edit') }}" class="inline-flex justify-center rounded-lg border border-brand-ink/15 px-4 py-2 text-sm font-medium hover:bg-brand-mist">Edit</a>
+                    <a href="{{ route('admin.home-collection-items.create') }}" class="inline-flex justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Collection</a>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+                <table class="w-full min-w-[700px] text-sm">
                     <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                         <tr>
                             <th class="px-4 py-3 font-medium">Order</th>
@@ -97,7 +97,9 @@
                                         <div class="flex h-12 w-16 items-center justify-center rounded bg-brand-mist text-[10px] text-brand-ink/40">No image</div>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 font-medium">{{ $item->displayName() }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="max-w-40 truncate font-medium" title="{{ $item->displayName() }}">{{ $item->displayName() }}</div>
+                                </td>
                                 <td class="px-4 py-3">{{ $item->typeLabel() }}</td>
                                 <td class="px-4 py-3">
                                     <span class="rounded-full px-2 py-0.5 text-xs {{ $item->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -121,19 +123,19 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
-            <div class="mb-4 flex items-center justify-between gap-3">
-                <div>
+        <section class="rounded-xl border border-brand-ink/10 bg-white p-4 sm:p-5">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div class="min-w-0">
                     <h2 class="font-display text-lg font-semibold">Product Sections</h2>
                     <p class="mt-1 text-sm text-brand-ink/60">
                         Add category-based sections (newest products first) or flag-based sections (from product Home Section Flags).
                     </p>
                 </div>
-                <a href="{{ route('admin.home-sections.create') }}" class="rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Section</a>
+                <a href="{{ route('admin.home-sections.create') }}" class="inline-flex shrink-0 justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">Add Section</a>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+                <table class="w-full min-w-[800px] text-sm">
                     <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                         <tr>
                             <th class="px-4 py-3 font-medium">Order</th>
@@ -149,7 +151,9 @@
                         @forelse ($sections as $section)
                             <tr class="border-t border-brand-ink/5">
                                 <td class="px-4 py-3">{{ $section->sort_order }}</td>
-                                <td class="px-4 py-3 font-medium">{{ $section->title }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="max-w-40 truncate font-medium" title="{{ $section->title }}">{{ $section->title }}</div>
+                                </td>
                                 <td class="px-4 py-3 capitalize">{{ $section->type }}</td>
                                 <td class="px-4 py-3">
                                     @if ($section->isCategoryType())

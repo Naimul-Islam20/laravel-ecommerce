@@ -51,18 +51,19 @@
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
             ],
         ];
+        $adminLogo = ($siteSettings ?? null)?->logoUrl() ?? asset('images/logo-mark.svg');
+        $adminSiteName = ($siteSettings ?? null)?->site_name ?: 'Admin';
     @endphp
 
-    <div class="flex min-h-screen">
-        <aside class="hidden w-64 shrink-0 border-r border-brand-ink/10 bg-white lg:block">
+    <div class="admin-shell flex min-h-screen w-full">
+        {{-- Desktop sidebar --}}
+        <aside class="admin-sidebar hidden w-64 shrink-0 border-r border-brand-ink/10 bg-white lg:flex lg:flex-col">
             <div class="flex h-20 items-center justify-center border-b border-brand-ink/10 px-4">
                 <a href="{{ route('admin.dashboard') }}" class="flex h-full w-full items-center justify-center py-1">
-                    <img src="{{ ($siteSettings ?? null)?->logoUrl() ?? asset('images/logo-mark.svg') }}"
-                         alt="{{ ($siteSettings ?? null)?->site_name ?: 'Admin' }}"
-                         class="h-full w-auto max-w-full object-contain">
+                    <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" class="h-full w-auto max-w-full object-contain">
                 </a>
             </div>
-            <nav class="space-y-1 p-4">
+            <nav class="flex-1 space-y-1 overflow-y-auto p-4">
                 @foreach ($adminNav as $item)
                     @php
                         $isActive = request()->routeIs(str_replace('.index', '.*', $item['route'])) || request()->routeIs($item['route']);
@@ -78,45 +79,71 @@
             </nav>
         </aside>
 
-        <div class="flex min-w-0 flex-1 flex-col">
-            <header class="border-b border-brand-ink/10 bg-white px-4 py-4 sm:px-6 lg:h-20 lg:py-0">
-                <div class="flex items-center justify-between gap-4 lg:h-full">
-                    <div>
-                        <h1 class="font-display text-xl font-semibold">@yield('heading', 'Dashboard')</h1>
-                        @hasSection('subheading')
-                            <p class="mt-1 text-sm text-brand-ink/60">@yield('subheading')</p>
-                        @endif
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="hidden text-sm text-brand-ink/60 sm:inline">{{ auth()->user()->name }}</span>
-                        <form action="{{ route('admin.logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-brand-ink/15 px-3 py-1.5 text-sm font-medium hover:bg-brand-mist">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                </svg>
-                                Logout
-                            </button>
-                        </form>
-                    </div>
+        {{-- Mobile sidebar drawer --}}
+        <div class="admin-mobile-sidebar lg:hidden" hidden data-admin-sidebar>
+            <button type="button" class="admin-mobile-sidebar-backdrop" data-admin-sidebar-close aria-label="Close menu"></button>
+            <aside class="admin-mobile-sidebar-panel" role="dialog" aria-modal="true" aria-label="Admin menu">
+                <div class="admin-mobile-sidebar-head">
+                    <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" class="h-10 w-auto max-w-[140px] object-contain">
+                    <button type="button" class="admin-mobile-sidebar-close" data-admin-sidebar-close aria-label="Close menu">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+                        </svg>
+                    </button>
                 </div>
-                <nav class="mt-4 flex gap-2 overflow-x-auto lg:hidden">
+                <nav class="admin-mobile-sidebar-nav">
                     @foreach ($adminNav as $item)
                         @php
                             $isActive = request()->routeIs(str_replace('.index', '.*', $item['route'])) || request()->routeIs($item['route']);
                         @endphp
                         <a href="{{ route($item['route']) }}"
-                           class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium {{ $isActive ? 'bg-brand-ink text-white' : 'bg-brand-mist text-brand-ink/70' }}">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                           class="admin-mobile-sidebar-link {{ $isActive ? 'is-active' : '' }}">
+                            <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
                                 {!! $item['icon'] !!}
                             </svg>
-                            {{ $item['label'] }}
+                            <span>{{ $item['label'] }}</span>
                         </a>
                     @endforeach
                 </nav>
+            </aside>
+        </div>
+
+        <div class="flex min-w-0 flex-1 flex-col">
+            <header class="admin-topbar border-b border-brand-ink/10 bg-white px-4 sm:px-6">
+                <div class="flex h-16 items-center justify-between gap-3 lg:h-20">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <button type="button"
+                                id="admin-menu-toggle"
+                                class="inline-flex shrink-0 items-center justify-center border-0 bg-transparent p-0 lg:hidden"
+                                aria-label="Open menu"
+                                aria-expanded="false">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="min-w-0">
+                            <h1 class="truncate font-display text-lg font-semibold sm:text-xl">@yield('heading', 'Dashboard')</h1>
+                            @hasSection('subheading')
+                                <p class="mt-0.5 hidden truncate text-sm text-brand-ink/60 sm:block">@yield('subheading')</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <span class="hidden max-w-[10rem] truncate text-sm text-brand-ink/60 md:inline">{{ auth()->user()->name }}</span>
+                        <form action="{{ route('admin.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-brand-ink/15 px-2.5 py-1.5 text-sm font-medium hover:bg-brand-mist sm:px-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                <span class="hidden sm:inline">Logout</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </header>
 
-            <main class="flex-1 p-4 sm:p-6">
+            <main class="admin-main w-full flex-1 px-2 py-4 sm:p-6">
                 @yield('content')
             </main>
         </div>

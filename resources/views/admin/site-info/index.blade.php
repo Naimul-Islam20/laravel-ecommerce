@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="space-y-6">
-        <section class="rounded-xl border border-brand-ink/10 bg-white p-5">
+        <section class="rounded-xl border border-brand-ink/10 bg-white p-4 sm:p-5">
             <h2 class="font-display text-lg font-semibold">Company Details</h2>
             <p class="mt-1 text-sm text-brand-ink/60">Brand name and short about text for the footer.</p>
 

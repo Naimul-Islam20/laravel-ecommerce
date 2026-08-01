@@ -31,7 +31,7 @@
 
     <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+            <table class="w-full min-w-[850px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                     <tr>
                         <th class="px-5 py-3 font-medium">From</th>
@@ -45,7 +45,7 @@
                     @forelse ($messages as $message)
                         <tr class="border-t border-brand-ink/5 {{ $message->is_read ? '' : 'bg-brand-mist/30' }}">
                             <td class="px-5 py-3">
-                                <div class="font-medium">
+                                <div class="max-w-40 truncate font-medium" title="{{ $message->displayName() }}">
                                     {{ $message->displayName() }}
                                     @unless ($message->is_read)
                                         <span class="ml-1 rounded-full bg-brand-ink px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">New</span>

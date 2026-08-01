@@ -18,7 +18,7 @@
 
     <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
+            <table class="w-full min-w-[650px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
                     <tr>
                         <th class="px-5 py-3 font-medium">Name</th>
@@ -32,7 +32,7 @@
                     @forelse ($categories as $category)
                         <tr class="border-t border-brand-ink/5">
                             <td class="px-5 py-3">
-                                <div class="font-medium">{{ $category->name }}</div>
+                                <div class="max-w-40 truncate font-medium" title="{{ $category->name }}">{{ $category->name }}</div>
                             </td>
                             <td class="px-5 py-3">{{ $category->children_count }}</td>
                             <td class="px-5 py-3">{{ $category->products_count }}</td>
