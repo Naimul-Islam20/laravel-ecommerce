@@ -11,12 +11,20 @@
                    class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm sm:w-72">
             <button type="submit" class="rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">Search</button>
         </form>
-        <a href="{{ route('admin.categories.create') }}" class="inline-flex justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white">
+        <a href="{{ route('admin.categories.create') }}" class="hidden justify-center rounded-lg bg-brand-ink px-4 py-2 text-sm font-medium text-white sm:inline-flex">
             Add Category
         </a>
     </div>
 
-    <div class="overflow-hidden rounded-xl border border-brand-ink/10 bg-white">
+    <a href="{{ route('admin.categories.create') }}"
+       class="admin-fab fixed right-4 bottom-4 z-40 inline-flex items-center gap-2 rounded-full bg-brand-ink px-4 py-3 text-sm font-medium text-white shadow-lg sm:hidden">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+        </svg>
+        Add Category
+    </a>
+
+    <div class="mb-20 overflow-hidden rounded-xl border border-brand-ink/10 bg-white sm:mb-0">
         <div class="overflow-x-auto">
             <table class="w-full min-w-[650px] text-sm">
                 <thead class="bg-brand-mist/50 text-left text-brand-ink/60">
