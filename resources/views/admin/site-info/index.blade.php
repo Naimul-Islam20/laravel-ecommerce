@@ -23,6 +23,16 @@
                 </div>
 
                 <div>
+                    <label for="currency" class="mb-1 block text-sm font-medium">Currency *</label>
+                    <input id="currency" name="currency" type="text"
+                           value="{{ old('currency', $settings->currency ?? 'Rs.') }}" required
+                           class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm"
+                           placeholder="Rs. or ₹">
+                    <p class="mt-1 text-xs text-brand-ink/50">Used for all product prices across the site</p>
+                    @error('currency')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
                     <label for="company_name" class="mb-1 block text-sm font-medium">Company Name</label>
                     <input id="company_name" name="company_name" type="text"
                            value="{{ old('company_name', $settings->company_name) }}"

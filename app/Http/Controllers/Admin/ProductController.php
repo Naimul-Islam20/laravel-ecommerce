@@ -8,14 +8,19 @@ use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\HomeSection;
 use App\Models\Product;
+use App\Services\ProductImageService;
 use App\Services\SlugService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function __construct(private SlugService $slugService) {}
+    public function __construct(
+        private SlugService $slugService,
+        private ProductImageService $imageService,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -43,7 +48,6 @@ class ProductController extends Controller
         return view('admin.products.create', [
             'categories' => Category::orderBy('name')->get(),
             'product' => new Product([
-                'currency' => 'USD',
                 'is_active' => true,
                 'pricing_mode' => Product::PRICING_MODE_SINGLE,
             ]),
@@ -55,7 +59,11 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request): RedirectResponse
     {
         $data = $request->validatedPayload();
-        $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Product::class);
+        $data['slug'] = $this->slugService->unique($data['name'], Product::class);
+
+        [$image, $gallery] = $this->resolveImages($request);
+        $data['image'] = $image;
+        $data['gallery'] = $gallery;
 
         $product = Product::create($data);
         $product->homeSections()->sync($request->homeSectionIds());
@@ -80,7 +88,16 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
         $data = $request->validatedPayload();
-        $data['slug'] = $data['slug'] ?: $this->slugService->unique($data['name'], Product::class, $product->id);
+        $data['slug'] = $this->slugService->unique($data['name'], Product::class, $product->id);
+
+        $previousPaths = array_values(array_filter([
+            $product->image,
+            ...($product->gallery ?? []),
+        ]));
+
+        [$image, $gallery] = $this->resolveImages($request, $previousPaths);
+        $data['image'] = $image;
+        $data['gallery'] = $gallery;
 
         $product->update($data);
         $product->homeSections()->sync($request->homeSectionIds());
@@ -92,10 +109,56 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
+        $this->imageService->delete($product->image);
+        $this->imageService->deleteMany($product->gallery ?? []);
         $product->delete();
 
         return redirect()
             ->route('admin.products.index')
             ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * @param  array<int, string>  $previousPaths
+     * @return array{0: ?string, 1: ?array<int, string>}
+     */
+    private function resolveImages(StoreProductRequest|UpdateProductRequest $request, array $previousPaths = []): array
+    {
+        [$keptExisting, $uploadsByIndex] = $request->imageRowPayload();
+        $existingInputs = (array) $request->input('existing_images', []);
+
+        $indexes = array_values(array_unique([
+            ...array_keys($keptExisting),
+            ...array_keys($uploadsByIndex),
+        ]));
+        sort($indexes, SORT_NUMERIC);
+
+        $finalPaths = [];
+
+        foreach ($indexes as $index) {
+            /** @var UploadedFile|null $file */
+            $file = $uploadsByIndex[$index] ?? null;
+
+            if ($file instanceof UploadedFile) {
+                $oldPath = trim((string) ($existingInputs[$index] ?? ''));
+                if ($oldPath !== '') {
+                    $this->imageService->delete($oldPath);
+                }
+                $finalPaths[] = $this->imageService->store($file);
+                continue;
+            }
+
+            if (! empty($keptExisting[$index])) {
+                $finalPaths[] = $keptExisting[$index];
+            }
+        }
+
+        $removed = array_values(array_diff($previousPaths, $finalPaths));
+        $this->imageService->deleteMany($removed);
+
+        $image = $finalPaths[0] ?? null;
+        $gallery = array_values(array_slice($finalPaths, 1));
+
+        return [$image, $gallery === [] ? null : $gallery];
     }
 }

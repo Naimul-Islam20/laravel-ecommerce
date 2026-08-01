@@ -20,25 +20,18 @@ abstract class ProductRequest extends FormRequest
         return [
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')],
             'name' => ['required', 'string', 'max:255'],
-            'brand' => ['nullable', 'string', 'max:255'],
-            'slug' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('products', 'slug')->ignore($productId),
-            ],
-            'image' => ['nullable', 'string', 'max:500'],
-            'short_description' => ['nullable', 'string', 'max:1000'],
+            'product_images' => ['nullable', 'array'],
+            'product_images.*' => ['nullable', 'image', 'max:5120'],
+            'existing_images' => ['nullable', 'array'],
+            'existing_images.*' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string'],
-            'gallery' => ['nullable', 'string'],
             'pricing_mode' => ['required', Rule::in([Product::PRICING_MODE_SINGLE, Product::PRICING_MODE_MULTIPLE])],
             'single_price' => ['nullable', 'numeric', 'min:0'],
             'package_labels' => ['nullable', 'array'],
             'package_labels.*' => ['nullable', 'string', 'max:100'],
             'package_prices' => ['nullable', 'array'],
             'package_prices.*' => ['nullable', 'numeric', 'min:0'],
-            'currency' => ['required', 'string', 'max:10'],
-            'is_active' => ['sometimes', 'boolean'],
+            'is_active' => ['required', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'home_section_ids' => ['nullable', 'array'],
             'home_section_ids.*' => [
@@ -52,7 +45,7 @@ abstract class ProductRequest extends FormRequest
     {
         $this->merge([
             'pricing_mode' => $this->input('pricing_mode', Product::PRICING_MODE_SINGLE),
-            'is_active' => $this->boolean('is_active'),
+            'is_active' => filter_var($this->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
             'home_section_ids' => array_values(array_filter(
                 array_map('intval', (array) $this->input('home_section_ids', []))
             )),
@@ -63,11 +56,20 @@ abstract class ProductRequest extends FormRequest
     {
         $data = $this->validated();
 
-        unset($data['home_section_ids'], $data['single_price'], $data['package_labels'], $data['package_prices']);
+        unset(
+            $data['home_section_ids'],
+            $data['single_price'],
+            $data['package_labels'],
+            $data['package_prices'],
+            $data['product_images'],
+            $data['existing_images'],
+        );
 
-        $data['gallery'] = $this->decodeJsonField('gallery');
         $data['pack_options'] = $this->buildPackOptions($data['pricing_mode']);
         $data['price_from'] = $this->resolvePriceFrom($data['pricing_mode'], $data['pack_options']);
+        $site = \App\Models\SiteSetting::current();
+        $data['currency'] = $site->currencyLabel();
+        $data['brand'] = trim((string) $site->site_name) ?: 'XPERCIAINC';
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
         return $data;
@@ -78,27 +80,34 @@ abstract class ProductRequest extends FormRequest
         return $this->validated('home_section_ids') ?? [];
     }
 
-    private function decodeJsonField(string $field): ?array
+    /**
+     * @return array{0: array<int, string>, 1: array<int, \Illuminate\Http\UploadedFile>}
+     */
+    public function imageRowPayload(): array
     {
-        $value = $this->input($field);
+        $existing = (array) $this->input('existing_images', []);
+        $files = (array) $this->file('product_images', []);
+        $indexes = array_values(array_unique([...array_keys($existing), ...array_keys($files)]));
+        sort($indexes, SORT_NUMERIC);
 
-        if ($value === null || $value === '') {
-            return null;
+        $keptExisting = [];
+        $uploadsByIndex = [];
+
+        foreach ($indexes as $index) {
+            $file = $files[$index] ?? null;
+            $path = trim((string) ($existing[$index] ?? ''));
+
+            if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                $uploadsByIndex[(int) $index] = $file;
+                continue;
+            }
+
+            if ($path !== '') {
+                $keptExisting[(int) $index] = $path;
+            }
         }
 
-        if (is_array($value)) {
-            return $value;
-        }
-
-        $decoded = json_decode($value, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                $field => ['Invalid JSON format.'],
-            ]);
-        }
-
-        return $decoded;
+        return [$keptExisting, $uploadsByIndex];
     }
 
     private function buildPackOptions(string $pricingMode): ?array

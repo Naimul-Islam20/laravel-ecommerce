@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HomeHeroSlideController;
 use App\Http\Controllers\Admin\HomePageController;
@@ -27,6 +28,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('subcategories', SubCategoryController::class)->except(['show']);
         Route::resource('admins', AdminUserController::class)->except(['show']);
+        Route::resource('contacts', ContactMessageController::class)->only(['index', 'show', 'destroy']);
 
         Route::get('home-page', [HomePageController::class, 'index'])->name('home-page.index');
         Route::put('home-page/settings', [HomePageController::class, 'updateSettings'])->name('home-page.settings.update');

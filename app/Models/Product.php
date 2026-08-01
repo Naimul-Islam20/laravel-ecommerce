@@ -181,29 +181,19 @@ class Product extends Model
 
     public function imageUrl(): ?string
     {
-        $path = $this->image ?: 'images/item-1.webp';
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return asset($path);
+        return app(\App\Services\ProductImageService::class)
+            ->url($this->image, 'images/item-1.webp');
     }
 
     public function galleryUrls(): array
     {
+        $imageService = app(\App\Services\ProductImageService::class);
         $urls = [$this->imageUrl()];
 
         foreach ($this->gallery ?? [] as $path) {
-            if (! $path) {
-                continue;
-            }
+            $url = $imageService->url($path);
 
-            $url = str_starts_with($path, 'http://') || str_starts_with($path, 'https://')
-                ? $path
-                : asset($path);
-
-            if (! in_array($url, $urls, true)) {
+            if ($url && ! in_array($url, $urls, true)) {
                 $urls[] = $url;
             }
         }
@@ -214,6 +204,11 @@ class Product extends Model
         }
 
         return $urls;
+    }
+
+    public function galleryPathUrl(string $path): ?string
+    {
+        return app(\App\Services\ProductImageService::class)->url($path);
     }
 
     public function packOptions(): array
@@ -280,7 +275,7 @@ class Product extends Model
 
     public function formattedPrice(float $amount): string
     {
-        return $this->currency.' '.number_format($amount, 2);
+        return $this->displayCurrency().' '.number_format($amount, 2);
     }
 
     public function formattedPriceFrom(): string
@@ -289,23 +284,44 @@ class Product extends Model
             return $this->formattedPrice((float) $this->price_from);
         }
 
-        return 'From '.$this->currency.' '.number_format((float) $this->price_from, 2);
+        return 'From '.$this->displayCurrency().' '.number_format((float) $this->price_from, 2);
     }
 
-    public function defaultShortDescription(): string
+    public function displayCurrency(): string
     {
-        return $this->short_description
-            ?: 'This tray contains 3 different compartments to segregate a variety of dry and liquid food. It is microwave & Freezer safe.';
+        return SiteSetting::current()->currencyLabel();
+    }
+
+    public function metaDescription(): string
+    {
+        $text = trim(preg_replace('/\s+/', ' ', strip_tags((string) $this->description)) ?? '');
+        $text = trim(preg_replace('/\*([^*\n]+)\*/', '$1', $text) ?? '');
+
+        if ($text !== '') {
+            return \Illuminate\Support\Str::limit($text, 160);
+        }
+
+        return $this->name.' from XPERCIAINC';
     }
 
     public function defaultDescriptionHtml(): string
     {
-        if ($this->description) {
-            return $this->description;
+        $description = trim((string) $this->description);
+
+        if ($description === '') {
+            return '<p><strong>'.e($this->name).'</strong></p>'
+                .'<p>Compact. Convenient. Classy.</p>'
+                .'<p>Perfect for restaurants, cloud kitchens, catering, and takeaways. Durable build with a secure lid for mess-free packing and delivery.</p>';
         }
 
-        return '<p><strong>'.$this->name.'</strong></p>'
-            .'<p>Compact. Convenient. Classy.</p>'
-            .'<p>Perfect for restaurants, cloud kitchens, catering, and takeaways. Durable build with a secure lid for mess-free packing and delivery.</p>';
+        // Legacy HTML descriptions from older seed/content.
+        if (preg_match('/<\/?[a-z][\s\S]*>/i', $description)) {
+            return $description;
+        }
+
+        $escaped = e($description);
+        $withBold = preg_replace('/\*([^*\n]+)\*/', '<strong>$1</strong>', $escaped) ?? $escaped;
+
+        return '<p>'.nl2br($withBold, false).'</p>';
     }
 }

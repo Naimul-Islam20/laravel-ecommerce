@@ -95,6 +95,7 @@ function initScrollReveal() {
         addItem(page.querySelector(".contact-page-title"), 0);
         addItem(page.querySelector(".contact-success"), 1);
         addItem(page.querySelector(".contact-form"), 1);
+        addItem(page.querySelector(".contact-details"), 2);
     });
 
     // Footer soft reveal
@@ -103,6 +104,9 @@ function initScrollReveal() {
     });
     addItem(document.querySelector(".site-footer .footer-social"), 0);
     addItem(document.querySelector(".site-footer .footer-bottom"), 0);
+
+    // Markup-declared reveals, so nothing stays hidden if it is not listed above
+    document.querySelectorAll(".scroll-reveal").forEach((el) => addItem(el, 0));
 
     if (!items.length) return;
 

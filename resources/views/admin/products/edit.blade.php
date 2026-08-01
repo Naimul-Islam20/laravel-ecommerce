@@ -4,7 +4,7 @@
 @section('heading', 'Edit Product')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.products.update', $product) }}" class="rounded-xl border border-brand-ink/10 bg-white p-5">
+    <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data" class="rounded-xl border border-brand-ink/10 bg-white p-5">
         @csrf
         @method('PUT')
         @include('admin.products._form')

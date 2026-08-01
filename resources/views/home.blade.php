@@ -17,5 +17,4 @@
 @endforeach
 
 <div id="shop" class="sr-only" aria-hidden="true"></div>
-<div id="bulk" class="sr-only" aria-hidden="true"></div>
 @endsection

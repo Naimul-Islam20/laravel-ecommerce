@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreContactMessageRequest;
+use App\Models\ContactMessage;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -13,14 +14,9 @@ class ContactController extends Controller
         return view('contact.show');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreContactMessageRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['nullable', 'string', 'max:120'],
-            'email' => ['required', 'email', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:40'],
-            'comment' => ['nullable', 'string', 'max:2000'],
-        ]);
+        ContactMessage::create($request->validated());
 
         return redirect()
             ->route('contact.show')

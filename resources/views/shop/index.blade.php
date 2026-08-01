@@ -47,14 +47,14 @@
                     <div class="collection-filter-menu collection-filter-menu--panel collection-filter-menu--price" data-filter-menu hidden>
                         <div class="collection-filter-panel-head">
                             <p class="collection-filter-panel-title">
-                                The highest price is Rs. {{ number_format($highestPrice ?? 0, 2) }}
+                                The highest price is {{ ($siteSettings?->currencyLabel() ?? 'Rs.') }} {{ number_format($highestPrice ?? 0, 2) }}
                             </p>
                         </div>
 
                         <div class="collection-price-fields">
                             <label class="collection-price-field">
                                 <span class="collection-price-row">
-                                    <span class="collection-price-currency">₹</span>
+                                    <span class="collection-price-currency">{{ $siteSettings?->currencyLabel() ?? 'Rs.' }}</span>
                                     <span class="collection-price-input-wrap">
                                         <input
                                             type="text"
@@ -70,7 +70,7 @@
                             </label>
                             <label class="collection-price-field">
                                 <span class="collection-price-row">
-                                    <span class="collection-price-currency">₹</span>
+                                    <span class="collection-price-currency">{{ $siteSettings?->currencyLabel() ?? 'Rs.' }}</span>
                                     <span class="collection-price-input-wrap">
                                         <input
                                             type="text"

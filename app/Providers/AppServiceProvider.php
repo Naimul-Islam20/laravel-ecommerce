@@ -35,17 +35,14 @@ class AppServiceProvider extends ServiceProvider
             return User::admins()->findOrFail($value);
         });
 
-        View::composer(['layouts.app', 'partials.header', 'partials.footer'], function ($view) {
-            if (in_array($view->name(), ['partials.header', 'partials.footer'], true)) {
-                $menuCategories = Category::forMenu()->get()->groupBy('menu_column');
-                $view->with('menuColumns', $menuCategories);
-            }
+        View::composer('*', function ($view) {
+            $view->with('siteSettings', once(
+                fn () => Schema::hasTable('site_settings') ? SiteSetting::current() : null
+            ));
+        });
 
-            if (Schema::hasTable('site_settings')) {
-                $view->with('siteSettings', SiteSetting::current());
-            } else {
-                $view->with('siteSettings', null);
-            }
+        View::composer(['partials.header', 'partials.footer'], function ($view) {
+            $view->with('menuColumns', Category::forMenu()->get()->groupBy('menu_column'));
         });
     }
 }

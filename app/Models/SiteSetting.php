@@ -8,6 +8,7 @@ class SiteSetting extends Model
 {
     protected $fillable = [
         'site_name',
+        'currency',
         'logo',
         'favicon',
         'company_name',
@@ -27,8 +28,14 @@ class SiteSetting extends Model
 
     public static function current(): self
     {
+        return once(fn () => static::resolveCurrent());
+    }
+
+    private static function resolveCurrent(): self
+    {
         return static::query()->firstOrCreate([], [
             'site_name' => 'XPERCIAINC',
+            'currency' => 'Rs.',
             'logo' => 'images/logo-mark.svg',
             'favicon' => 'images/logo-mark.svg',
             'company_name' => 'Rp Trading Company',
@@ -45,6 +52,13 @@ class SiteSetting extends Model
             'meta_description' => 'xperciainc offers a wide range of disposable food packaging for restaurants, cloud kitchens, catering, and takeaways.',
             'meta_keywords' => 'disposable packaging, food packaging, eco-friendly packaging, meal trays, takeaway containers',
         ]);
+    }
+
+    public function currencyLabel(): string
+    {
+        $currency = trim((string) $this->currency);
+
+        return $currency !== '' ? $currency : 'Rs.';
     }
 
     public function defaultMetaTitle(): string
@@ -105,6 +119,24 @@ class SiteSetting extends Model
         }
 
         return 'https://maps.google.com/?q='.rawurlencode($address);
+    }
+
+    public function mapsEmbedUrl(): ?string
+    {
+        $address = trim((string) $this->address);
+        $mapUrl = trim((string) $this->map_url);
+
+        if ($address === '' && $mapUrl === '') {
+            return null;
+        }
+
+        $query = $address !== '' ? $address : $mapUrl;
+
+        if (preg_match('/[?&]q=([^&]+)/', $mapUrl, $matches)) {
+            $query = urldecode($matches[1]);
+        }
+
+        return 'https://maps.google.com/maps?q='.rawurlencode($query).'&z=15&output=embed';
     }
 
     public function socialLinks(): array

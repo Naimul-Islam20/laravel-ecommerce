@@ -16,7 +16,9 @@
             Password {{ $admin->exists ? '(leave blank to keep current)' : '*' }}
         </label>
         <input id="password" name="password" type="password" {{ $admin->exists ? '' : 'required' }}
+               minlength="6" autocomplete="new-password"
                class="w-full rounded-lg border border-brand-ink/15 px-3 py-2 text-sm">
+        <p class="mt-1 text-xs text-brand-ink/50">Minimum 6 characters (e.g. 123456)</p>
         @error('password')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
     <div>

@@ -15,6 +15,7 @@ class UpdateSiteSettingRequest extends FormRequest
     {
         return [
             'site_name' => ['required', 'string', 'max:255'],
+            'currency' => ['required', 'string', 'max:20'],
             'logo' => ['nullable', 'string', 'max:500'],
             'favicon' => ['nullable', 'string', 'max:500'],
             'company_name' => ['nullable', 'string', 'max:255'],
