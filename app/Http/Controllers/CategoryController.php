@@ -53,7 +53,9 @@ class CategoryController extends Controller
 
     private function showHomeSectionListing(Request $request, HomeSection $section): View
     {
-        $query = $section->flaggedProducts()->active();
+        $query = Product::query()
+            ->active()
+            ->whereHas('homeSections', fn (Builder $q) => $q->where('home_sections.id', $section->id));
 
         $this->applyFilters($query, $request, applyPrice: false, applyAvailability: false);
 
