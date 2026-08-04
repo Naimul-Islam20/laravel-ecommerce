@@ -368,7 +368,8 @@ function initCollectionFilters() {
 
         document.body.classList.toggle("collection-filter-drawer-open", open);
         drawerOpen?.setAttribute("aria-expanded", String(open));
-        drawer.inert = !open;
+        // Only lock the drawer on mobile; on desktop it is the visible toolbar.
+        drawer.inert = mobileQuery.matches ? !open : false;
     };
 
     drawerOpen?.addEventListener("click", (event) => {
@@ -391,14 +392,14 @@ function initCollectionFilters() {
 
     const syncDrawerMode = () => {
         if (mobileQuery.matches) {
-            if (drawer) drawer.inert = true;
+            if (drawer) drawer.inert = !drawer.classList.contains("is-open");
             dropdowns.forEach((dropdown) => {
                 const menu = dropdown.querySelector("[data-filter-menu]");
                 if (menu) menu.hidden = false;
             });
         } else {
-            if (drawer) drawer.inert = false;
             setDrawerOpen(false);
+            if (drawer) drawer.inert = false;
             dropdowns.forEach((dropdown) => {
                 dropdown.classList.remove("is-open");
                 const menu = dropdown.querySelector("[data-filter-menu]");
