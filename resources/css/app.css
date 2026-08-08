@@ -473,6 +473,8 @@ body.mobile-sidebar-open {
 
     .hero-cta .container {
         pointer-events: none;
+        display: flex;
+        justify-content: center;
     }
 
     .hero-shop-btn {
@@ -498,6 +500,10 @@ body.mobile-sidebar-open {
     }
 
     @media (min-width: 768px) {
+        .hero-cta .container {
+            justify-content: flex-start;
+        }
+
         .hero-shop-btn {
             max-width: none;
             padding: 0.875rem 2rem;
